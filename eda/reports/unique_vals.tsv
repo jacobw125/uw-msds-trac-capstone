@@ -1,0 +1,471 @@
+col	val
+txn_type_id	3
+txn_subtype_id	84
+txn_subtype_id	85
+txn_subtype_id	86
+txn_subtype_id	88
+txn_subtype_id	89
+txn_type_descr	Product Multiride Use Journey
+txn_type_descr	Product Pass Use Journey
+txn_type_descr	Product Pass Use on Entry
+txn_type_descr	Product Purse Use Journey
+txn_type_descr	Product Purse Use on Entry
+upgrade_indicator	N
+upgrade_indicator	Y
+product_descr	All-Day PugetPass $1.75
+product_descr	All-Day PugetPass $3.50
+product_descr	Community Transit Business Passport
+product_descr	Everett Transit Business Passport
+product_descr	Everett Transit Monthly Reduced Fare Pass
+product_descr	KCM 10 Ride $1.50
+product_descr	King County Metro Business Passport
+product_descr	Kitsap Transit Bus/Ferry Full Fare Pass
+product_descr	Kitsap Transit Bus/Ferry Reduced Fare Pass
+product_descr	Kitsap Transit Fast Ferry Full Fare Pass
+product_descr	Kitsap Transit Fast Ferry Reduced Fare Pass
+product_descr	Kitsap Transit Full Fare Pass
+product_descr	Kitsap Transit Reduced Fare Pass
+product_descr	Kitsap Transit Worker/Driver Full Fare Pass
+product_descr	Metro All-Day Pass
+product_descr	Metro Monthly Access Pass
+product_descr	Metro Monthly Adult Pass Offpeak
+product_descr	PT Adult All-Day Pass
+product_descr	PT Youth/Senior/Disabled All-Day Pass
+product_descr	Pierce Transit Adult Monthly Pass
+product_descr	Pierce Transit Business Passport
+product_descr	Pierce Transit Reduced Fare Monthly Pass
+product_descr	PugetPass $0.50
+product_descr	PugetPass $0.75
+product_descr	PugetPass $1.00
+product_descr	PugetPass $1.25
+product_descr	PugetPass $1.50
+product_descr	PugetPass $1.75
+product_descr	PugetPass $10.00
+product_descr	PugetPass $2.00
+product_descr	PugetPass $2.25
+product_descr	PugetPass $2.50
+product_descr	PugetPass $2.75
+product_descr	PugetPass $3.00
+product_descr	PugetPass $3.25
+product_descr	PugetPass $3.50
+product_descr	PugetPass $3.75
+product_descr	PugetPass $4.00
+product_descr	PugetPass $4.25
+product_descr	PugetPass $4.50
+product_descr	PugetPass $4.75
+product_descr	PugetPass $5.00
+product_descr	PugetPass $5.25
+product_descr	PugetPass $5.50
+product_descr	PugetPass $5.75
+product_descr	Purse
+product_descr	Regional Bus and Train Passport
+product_descr	Sound Transit Business Passport
+product_descr	WSF Central Sound Monthly Pass
+product_descr	WSF Central Sound Passenger 10-Ride
+product_descr	WSF Fauntleroy-Southworth Monthly Pass
+product_descr	WSF Fauntleroy-Southworth Passenger 10-Ride
+product_descr	WSF Mukilteo-Clinton Monthly Pass
+product_descr	WSF Mukilteo-Clinton Passenger 10-Ride
+product_descr	WSF Port Townsend-Coupeville Passenger 20-Ride
+product_descr	WSF Vashon Island Monthly Pass
+product_descr	WSF Vashon Island Passenger 10-Ride
+transit_operator_abbrev	
+transit_operator_abbrev	CT
+transit_operator_abbrev	ET
+transit_operator_abbrev	FT
+transit_operator_abbrev	HPL
+transit_operator_abbrev	KCM
+transit_operator_abbrev	KMD
+transit_operator_abbrev	KT
+transit_operator_abbrev	PT
+transit_operator_abbrev	ST
+transit_operator_abbrev	WSF
+route_number	
+route_number	1
+route_number	10
+route_number	100
+route_number	101
+route_number	102
+route_number	105
+route_number	106
+route_number	107
+route_number	109
+route_number	11
+route_number	111
+route_number	112
+route_number	113
+route_number	114
+route_number	115
+route_number	116
+route_number	118
+route_number	119
+route_number	12
+route_number	120
+route_number	121
+route_number	122
+route_number	123
+route_number	124
+route_number	125
+route_number	128
+route_number	13
+route_number	130
+route_number	131
+route_number	132
+route_number	14
+route_number	143
+route_number	148
+route_number	15
+route_number	150
+route_number	153
+route_number	154
+route_number	156
+route_number	157
+route_number	158
+route_number	159
+route_number	16
+route_number	164
+route_number	166
+route_number	167
+route_number	168
+route_number	169
+route_number	17
+route_number	177
+route_number	178
+route_number	179
+route_number	18
+route_number	180
+route_number	181
+route_number	182
+route_number	183
+route_number	186
+route_number	187
+route_number	19
+route_number	190
+route_number	192
+route_number	193
+route_number	196
+route_number	197
+route_number	2
+route_number	20
+route_number	201
+route_number	202
+route_number	204
+route_number	206
+route_number	208
+route_number	209
+route_number	21
+route_number	212
+route_number	214
+route_number	216
+route_number	217
+route_number	218
+route_number	219
+route_number	22
+route_number	220
+route_number	221
+route_number	222
+route_number	224
+route_number	225
+route_number	226
+route_number	227
+route_number	23
+route_number	230
+route_number	232
+route_number	234
+route_number	235
+route_number	236
+route_number	237
+route_number	238
+route_number	24
+route_number	240
+route_number	241
+route_number	243
+route_number	244
+route_number	245
+route_number	246
+route_number	247
+route_number	248
+route_number	249
+route_number	25
+route_number	252
+route_number	255
+route_number	257
+route_number	26
+route_number	268
+route_number	269
+route_number	27
+route_number	270
+route_number	271
+route_number	277
+route_number	28
+route_number	280
+route_number	29
+route_number	3
+route_number	301
+route_number	302
+route_number	303
+route_number	304
+route_number	307
+route_number	308
+route_number	309
+route_number	31
+route_number	311
+route_number	312
+route_number	316
+route_number	32
+route_number	33
+route_number	330
+route_number	331
+route_number	34
+route_number	342
+route_number	345
+route_number	346
+route_number	347
+route_number	348
+route_number	35
+route_number	355
+route_number	36
+route_number	37
+route_number	372
+route_number	373
+route_number	4
+route_number	40
+route_number	400
+route_number	402
+route_number	405
+route_number	409
+route_number	41
+route_number	410
+route_number	412
+route_number	413
+route_number	415
+route_number	416
+route_number	417
+route_number	42
+route_number	421
+route_number	422
+route_number	424
+route_number	425
+route_number	43
+route_number	435
+route_number	44
+route_number	444
+route_number	45
+route_number	47
+route_number	48
+route_number	49
+route_number	497
+route_number	5
+route_number	50
+route_number	500
+route_number	501
+route_number	510
+route_number	511
+route_number	512
+route_number	513
+route_number	52
+route_number	522
+route_number	53
+route_number	532
+route_number	535
+route_number	54
+route_number	540
+route_number	541
+route_number	542
+route_number	545
+route_number	55
+route_number	550
+route_number	554
+route_number	555
+route_number	556
+route_number	56
+route_number	560
+route_number	566
+route_number	567
+route_number	57
+route_number	574
+route_number	577
+route_number	578
+route_number	580
+route_number	586
+route_number	590
+route_number	592
+route_number	594
+route_number	595
+route_number	596
+route_number	6
+route_number	60
+route_number	600
+route_number	601
+route_number	602
+route_number	603
+route_number	604
+route_number	605
+route_number	606
+route_number	607
+route_number	608
+route_number	609
+route_number	610
+route_number	611
+route_number	612
+route_number	613
+route_number	614
+route_number	615
+route_number	616
+route_number	617
+route_number	618
+route_number	619
+route_number	62
+route_number	620
+route_number	621
+route_number	622
+route_number	623
+route_number	624
+route_number	625
+route_number	627
+route_number	628
+route_number	629
+route_number	63
+route_number	630
+route_number	631
+route_number	632
+route_number	633
+route_number	634
+route_number	635
+route_number	638
+route_number	639
+route_number	64
+route_number	65
+route_number	651
+route_number	652
+route_number	661
+route_number	67
+route_number	671
+route_number	672
+route_number	673
+route_number	674
+route_number	675
+route_number	676
+route_number	696
+route_number	697
+route_number	698
+route_number	699
+route_number	7
+route_number	70
+route_number	701
+route_number	71
+route_number	717
+route_number	73
+route_number	74
+route_number	75
+route_number	76
+route_number	77
+route_number	773
+route_number	777
+route_number	779
+route_number	78
+route_number	794
+route_number	795
+route_number	8
+route_number	800
+route_number	801
+route_number	802
+route_number	803
+route_number	81
+route_number	810
+route_number	821
+route_number	823
+route_number	824
+route_number	85
+route_number	851
+route_number	852
+route_number	853
+route_number	854
+route_number	855
+route_number	856
+route_number	857
+route_number	858
+route_number	859
+route_number	86
+route_number	860
+route_number	862
+route_number	863
+route_number	871
+route_number	880
+route_number	881
+route_number	886
+route_number	887
+route_number	888
+route_number	889
+route_number	891
+route_number	892
+route_number	893
+route_number	894
+route_number	895
+route_number	9
+route_number	90
+route_number	9000
+route_number	901
+route_number	903
+route_number	906
+route_number	907
+route_number	908
+route_number	91
+route_number	910
+route_number	9100
+route_number	9102
+route_number	913
+route_number	915
+route_number	916
+route_number	917
+route_number	92
+route_number	93
+route_number	930
+route_number	9300
+route_number	9301
+route_number	9304
+route_number	931
+route_number	94
+route_number	95
+route_number	9500
+route_number	9501
+route_number	9502
+route_number	9503
+route_number	952
+route_number	96
+route_number	97
+route_number	9701
+route_number	973
+route_number	975
+route_number	98
+route_number	980
+route_number	981
+route_number	982
+route_number	984
+route_number	986
+route_number	987
+route_number	988
+route_number	989
+route_number	99
+route_number	9900
+route_number	994
+route_number	995
+route_number	BRT
+route_number	CR
+route_number	FB
+route_number	LR
+route_number	SC
+direction_id	1
+direction_id	2
+direction_descr	Inbd
+direction_descr	Outbd
+device_type	
+device_type	DTPFTP
+device_type	KCMDDU
+device_type	KTPFTP
+device_type	OBFTP
+device_type	RRPFTP
+device_type	SAFTP
+device_type	WFPFTP
+device_type	WSFGAK
+device_type	WTPFTP
