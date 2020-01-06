@@ -10,16 +10,36 @@ if len(argv) != 3: raise ValueError("Expected two args: APC and Orca TSV files")
 
 APCFILE = argv[1]  # or  APCFILE='data/apc_route_agg.tsv'
 ORCAFILE = argv[2]  # or ORCAFILE='data/orca_route_agg.tsv'
-RTE_FILE = 'data/rte_dir_desc.tsv'
+RTE_FILE = 'data/rte_bnd_to_cardinal_direction.csv'
 
-rte_file = pd.read_csv(RTE_FILE, sep='\t')
-apc_file = pd.read_csv(APCFILE, sep='\t').merge(rte_file, how="outer", on=['rte', 'dir'])
-missing_directions = apc_file[pd.isnull(apc_file.description)][['rte', 'dir']].drop_duplicates()
+rte_file = pd.read_csv(RTE_FILE, sep=',', dtype={'route_number': 'O'}) # headers source_agency_id,route_number,direction_descr,dir
+apc_file = pd.read_csv(APCFILE, sep='\t', dtype={'rte': 'O'}).merge(rte_file, how="outer", left_on=['rte', 'dir'], right_on=['route_number', 'dir'])
+missing_directions = apc_file[pd.isnull(apc_file.direction_descr)][['rte', 'dir']].drop_duplicates()
+missing_directions.to_csv('data/apc_missing_rte_bounds.csv', sep=',', index=False)
 
 
 # What if we went the other direction?
-orca_file = pd.merge(pd.read_csv(ORCAFILE, sep='\t'), rte_file, how='outer', left_on=['route_number', 'direction_descr'], right_on=['rte','description'])
-orca_missing_directions = orca_file[pd.isnull(orca_file.dir)][['rte', 'description']].drop_duplicates()
+orca_file = pd.read_csv(ORCAFILE, sep='\t', dtype={'route_number': 'O'})
+def fix_route_number(x):
+    try:
+        return str(int(x))
+    except:
+        try:
+            return str(int(float(x)))
+        except:
+            return x
+
+orca_file['route_number'] = orca_file['route_number'].apply(fix_route_number)
+orca_file = pd.merge(
+    orca_file,
+    rte_file, 
+    how='outer', 
+    left_on=['route_number', 'direction_descr'], 
+    right_on=['route_number', 'direction_descr']
+)
+
+orca_missing_directions = orca_file[pd.isnull(orca_file.dir)][['route_number', 'direction_descr']].drop_duplicates()
+orca_missing_directions.to_csv('data/orca_missing_rte_bounds.csv', sep=',', index=False)
 
 merged = pd.merge(apc_file, orca_file, how="outer", on={'rte': 'route_number', ''})
 

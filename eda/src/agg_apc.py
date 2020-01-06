@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
+import pandas as pd
 import gzip
 import csv
 from sys import argv
-import pandas as pd
 
 if len(argv) < 2:
     raise ValueError("Missing input file")
@@ -22,7 +22,7 @@ data['is_am'] = data['stop_dt'].apply(lambda dt: dt.hour <= 12)
 data['stops'] = 1
 data['mean_door_open_sec'] = data['door_open_sec']
 data['sum_door_open_sec'] = data['door_open_sec']
-aggd = data.groupby(['rte', 'dir', 'opd_date', 'is_am']).agg({
+aggd = data.groupby(['rte', 'dir', 'opd_date', 'is_am', 'day_of_week']).agg({
     'stops': 'sum',
     'ons': 'sum',
     'offs': 'sum',
