@@ -79,18 +79,31 @@ COLS_TO_KEEP = [
 ]
 
 
+def is_rapidride(row):
+    try:
+        return str(int(row['route_number']) > 600)
+    except:
+        return str(False) # can't parse as int
+
+
 COLS_TO_GENERATE = {
-    'day_of_week': lambda row: str(datetime.strptime(row['business_date'], "%Y-%m-%d").weekday())  # Monday is 0, Sunday is 6
+    'day_of_week': lambda row: str(datetime.strptime(row['business_date'], "%Y-%m-%d").weekday()),  # Monday is 0, Sunday is 6
+    'is_rapidride': is_rapidride
 }
 
 def null_if_empty(s): return None if s == '' else s
 
 def keep_row(row):
-    # bus, bus rapid transit,  not washington state ferries, remove snow days
+    # bus, bus rapid transit, KCM only, remove snow days
+    try:
+        rte_num = int(row['route_number'])
+    except:
+        rte_num = -1  # can't parse as int, i.e. has characters in it, so ignore this filtering condition
     return str(row['mode_id']) in ('128', '250')  \
-            and str(row['service_agency_id']) != '8' \
+            and str(row['service_agency_id']) == '4' \
             and str(row['business_date']) not in ('2019-02-03', '2019-02-04', '2019-02-08', '2019-02-09', '2019-02-10', '2019-02-11') \
-            and int(row['passenger_count']) < 10
+            and int(row['passenger_count']) < 10 \
+            and (rte_num < 600 or (rte_num >= 671 and rte_num <= 676))
 
 print(f"Processing file {argv[1]} into {argv[2]}")
 n=0

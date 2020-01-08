@@ -43,20 +43,33 @@ COLS_TO_KEEP = [
     #'gps_long'
 ]
 
+
+def is_rapidride(row):
+    try:
+        return str(int(row['rte']) > 600)
+    except:
+        return str(False) # can't parse as int
+
 COLS_TO_GENERATE = {
-    'day_of_week': lambda row: str(datetime.strptime(row['opd_date'], "%Y-%m-%d").weekday())  # Monday is 0, Sunday is 6
+    'day_of_week': lambda row: str(datetime.strptime(row['opd_date'], "%Y-%m-%d").weekday()),  # Monday is 0, Sunday is 6
+    'is_rapidride': is_rapidride
 }
 
 def null_if_empty(s): return None if s == '' else s
 
 def keep_row(row):
+    try:
+        rte_num = int(row['rte'])
+    except:
+        rte_num = -1
     return str(row['opd_date']) not in ('2019-02-03', '2019-02-04', '2019-02-08', '2019-02-09', '2019-02-10', '2019-02-11') \
             and float(row['dwell_sec']) < 2000 \
             and float(row['door_open_sec']) >= 0 \
             and float(row['door_open_sec']) < 2000 \
             and row['apc_veh'] == 'Y' \
             and int(row['ons']) < 150 \
-            and int(row['offs']) < 150
+            and int(row['offs']) < 150 \
+            and (rte_num < 600 or (rte_num >= 671 and rte_num <= 676))
 
 print(f"Processing file {argv[1]} into {argv[2]}")
 n=0

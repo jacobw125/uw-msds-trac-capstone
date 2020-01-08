@@ -43,7 +43,7 @@ data.senior_c[data['txn_passenger_type_descr'] != 'Senior'] = 0
 data.youth_c[data['txn_passenger_type_descr'] != 'Youth'] = 0
 data.lowincome_c[data['txn_passenger_type_descr'] != 'Low Income'] = 0
 
-aggd = data.groupby(['route_number', 'direction_descr', 'txn_date', 'is_am', 'day_of_week']).agg({
+aggd = data.groupby(['route_number', 'direction_descr', 'txn_date', 'is_am', 'day_of_week', 'is_rapidride']).agg({
     'stops': 'nunique',
     'orca_t': 'sum',
     'adult_t': 'sum',
