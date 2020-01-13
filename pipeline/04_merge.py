@@ -14,6 +14,10 @@ days_to_keep = [f'2019-01-{day:02d}' for day in range(7,32)] +  \
 cols_to_fillna = ['orca_total', 'orca_adult', 'orca_disabled', 'orca_senior', 'orca_youth', 'orca_lowincome', 'orca_uw']
 desired_column_order = [
     'opd_date',
+    'stop_datetime',   # apc
+    'opd_txn_diff',    # apc
+    'txn_dtm_pacific', # orca
+    'biz_txn_diff',    # orca
     'day_of_week',
     'trip_id', 
     'stop_id',
@@ -54,7 +58,9 @@ def process_file(day):
         right_on=['trip_id', 'stop_id'],
         how='inner',
         suffixes=('_apc', '_orca')
-    ).drop(columns=['business_date', 'route_number', 'sch_st_min', 'sch_stop_sec', 'act_stop_arr',])[desired_column_order].sort_values(sort_by)
+    ).drop(columns=['business_date', 'route_number', 'sch_st_min', 'sch_stop_sec', 'act_stop_arr',])[desired_column_order].sort_values(sort_by).rename(
+        columns={'stop_datetime': 'apc_stop_dt', 'opd_txn_diff': 'apc_txn_dt_diff', 'txn_dtm_pacific': 'orca_txn_dtm_pac', 'biz_txn_diff': 'orca_txn_dt_diff'}
+    )
     data[cols_to_fillna] = data[cols_to_fillna].fillna(value=0)
     return data
 

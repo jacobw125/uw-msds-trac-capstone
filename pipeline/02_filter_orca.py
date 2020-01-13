@@ -92,7 +92,10 @@ def is_rapidride(row):
 
 COLS_TO_GENERATE = {
     'day_of_week': lambda row: str(datetime.strptime(row['business_date'], "%Y-%m-%d").weekday()),  # Monday is 0, Sunday is 6
-    'is_rapidride': is_rapidride
+    'is_rapidride': is_rapidride,
+    'biz_txn_diff': lambda row: str((
+            datetime.strptime(row['business_date'], "%Y-%m-%d").date() - datetime.strptime(row['txn_dtm_pacific'], "%Y-%m-%d %H:%M:%S").date()
+        ).days)
 }
 
 def null_if_empty(s): return None if s == '' else s

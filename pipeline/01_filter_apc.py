@@ -68,7 +68,10 @@ COLS_TO_GENERATE = {
     'door_open_sec': lambda row: None if int_or_zero(row['door_open_sec']) < 0 or int_or_zero(row['door_open_sec']) > 2000 else row['door_open_sec'],
     'dwell_sec': lambda row: None if int_or_zero(row['dwell_sec']) < 0 or int_or_zero(row['dwell_sec']) > 2000 else row['dwell_sec'],
     'ons': lambda row: row['ons'] if int_or_zero(row['ons']) < 150 else None,
-    'offs': lambda row: row['offs'] if int_or_zero(row['offs']) < 150 else None
+    'offs': lambda row: row['offs'] if int_or_zero(row['offs']) < 150 else None,
+    'opd_txn_diff': lambda row: str((
+            datetime.strptime(row['opd_date'], "%Y-%m-%d").date() - datetime.strptime(row['stop_datetime'], "%Y-%m-%d %H:%M:%S").date()
+        ).days)
 }
 
 def null_if_empty(s): return None if s == '' else s

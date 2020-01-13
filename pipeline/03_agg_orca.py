@@ -15,7 +15,7 @@ files = [f'data/orca/{day}.tsv.gz' for day in days_to_keep]
 
 def process_file(fname):
     print(f"Aggregating {fname}")
-    data = pd.read_csv(fname, sep='\t', dtype={'trip_id': 'O', 'stop_id': 'O', 'route_number': 'O'})
+    data = pd.read_csv(fname, sep='\t', dtype={'trip_id': 'O', 'stop_id': 'O', 'route_number': 'O'}, low_memory=False)
     data['orca_total'] = data['passenger_count']
     data['orca_adult'] = data['passenger_count'].where(data['txn_passenger_type_descr'] == 'Adult', 0)
     data['orca_disabled'] = data['passenger_count'].where(data['txn_passenger_type_descr'] == 'Disabled', 0)
@@ -24,7 +24,7 @@ def process_file(fname):
     data['orca_lowincome'] = data['passenger_count'].where(data['txn_passenger_type_descr'] == 'Low Income', 0)
     data['orca_uw'] = data['passenger_count'].where(data['institution_name'] == 'University of Washington', 0)
 
-    data.groupby(['business_date', 'trip_id', 'stop_id', 'route_number', 'direction_descr']).agg({
+    data.groupby(['business_date', 'txn_dtm_pacific', 'trip_id', 'stop_id', 'route_number', 'direction_descr', 'biz_txn_diff']).agg({
         'orca_total': 'sum',
         'orca_adult': 'sum',
         'orca_disabled': 'sum',
