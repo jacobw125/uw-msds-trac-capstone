@@ -112,7 +112,7 @@ def keep_row(row):
 days_to_keep = [f'2019-01-{day:02d}' for day in range(7,32)] +  \
                [f'2019-02-{day:02d}' for day in range(1,3)] +  \
                [f'2019-02-{day:02d}' for day in range(13, 29)] + \
-               [f'2019-03-{day:02d}' for day in range(1, 3)]
+               [f'2019-03-{day:02d}' for day in range(1, 4)]
 
 COLS_IN_OUTFILE = list(set(COLS_TO_KEEP + list(COLS_TO_GENERATE.keys())))
 

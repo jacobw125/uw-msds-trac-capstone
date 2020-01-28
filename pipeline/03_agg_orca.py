@@ -9,7 +9,7 @@ from os.path import basename
 days_to_keep = [f'2019-01-{day:02d}' for day in range(7,32)] +  \
                [f'2019-02-{day:02d}' for day in range(1,3)] +  \
                [f'2019-02-{day:02d}' for day in range(13, 29)] + \
-               [f'2019-03-{day:02d}' for day in range(1, 3)]
+               [f'2019-03-{day:02d}' for day in range(1, 4)]
 
 files = [f'data/orca/{day}.tsv.gz' for day in days_to_keep]
 
