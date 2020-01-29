@@ -108,6 +108,7 @@ X_COLUMNS = {
 print("Creating time-aggregate columns")
 # Create time-level aggregates
 data['trip_start_hr'] = data['trip_start_dt'].apply(lambda dt: dt.strftime("%H"))
+data['trip_start_is_am'] = data['trip_start_dt'].apply(lambda dt: 'am' if dt.hour < 12 else 'pm')
 data['trip_start_hr_30'] = data['trip_start_dt'].apply(lambda dt: dt.strftime("%H") + '_' + str(int(dt.minute/30)*30))
 data['trip_start_hr_15'] = data['trip_start_dt'].apply(lambda dt: dt.strftime("%H") + '_' + str(int(dt.minute/15)*15))
 
@@ -120,7 +121,7 @@ aggr_day = agg_data(['opd_date', 'rte', 'dir'])
 
 # Group by day, AM/PM, rte/dir
 print("Performing aggregation (am/pm)")
-aggr_day_ampm = agg_data(['opd_date', 'is_am', 'rte', 'dir'])
+aggr_day_ampm = agg_data(['opd_date', 'trip_start_is_am', 'rte', 'dir'])
 
 # Group by day, hour of day, rte/dir
 print("Performing aggregation (hour)")
