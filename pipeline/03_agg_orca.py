@@ -23,8 +23,9 @@ def process_file(fname):
     data['orca_youth'] = data['passenger_count'].where(data['txn_passenger_type_descr'] == 'Youth', 0)
     data['orca_lowincome'] = data['passenger_count'].where(data['txn_passenger_type_descr'] == 'Low Income', 0)
     data['orca_uw'] = data['passenger_count'].where(data['institution_name'] == 'University of Washington', 0)
-
-    data.groupby(['business_date', 'txn_dtm_pacific', 'trip_id', 'stop_id', 'route_number', 'direction_descr', 'biz_txn_diff']).agg({
+    data.groupby(['business_date', 'trip_id', 'stop_id', 'route_number', 'direction_descr']).agg({
+        'txn_dtm_pacific': 'first',
+        'biz_txn_diff': 'first',
         'orca_total': 'sum',
         'orca_adult': 'sum',
         'orca_disabled': 'sum',
