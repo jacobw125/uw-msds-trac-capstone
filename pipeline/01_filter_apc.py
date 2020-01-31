@@ -14,6 +14,8 @@ from os import makedirs
 from typing import Dict
 from datetime import datetime
 
+IS_SUMMER = True
+
 if len(argv) < 2:
     raise ValueError("Missing input file")
 
@@ -84,11 +86,16 @@ def keep_row(row):
     return row['apc_veh'] == 'Y' and (rte_num < 600 or (rte_num >= 671 and rte_num <= 676))
 
 print(f"Processing file {argv[1]} into data/apc/*.tsv.gz")
+makedirs('data/apc', exist_ok=True)
 
 days_to_keep = [f'2019-01-{day:02d}' for day in range(7,32)] +  \
                [f'2019-02-{day:02d}' for day in range(1,3)] +  \
                [f'2019-02-{day:02d}' for day in range(13, 29)] + \
                [f'2019-03-{day:02d}' for day in range(1, 4)]
+
+if IS_SUMMER:
+    days_to_keep = [f'2019-07-{day:02d}' for day in range(1, 32)]  + \
+                   [f'2019-08-{day:02d}' for day in range(1, 32)]
 
 COLS_IN_OUTFILE = list(set(COLS_TO_KEEP + list(COLS_TO_GENERATE.keys())))
 

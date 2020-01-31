@@ -5,13 +5,21 @@
 import pandas as pd
 from multiprocessing import Pool
 from os.path import basename
+from os import makedirs
+
+IS_SUMMER=True
 
 days_to_keep = [f'2019-01-{day:02d}' for day in range(7,32)] +  \
                [f'2019-02-{day:02d}' for day in range(1,3)] +  \
                [f'2019-02-{day:02d}' for day in range(13, 29)] + \
                [f'2019-03-{day:02d}' for day in range(1, 4)]
 
+if IS_SUMMER:
+    days_to_keep = [f'2019-07-{day:02d}' for day in range(1, 32)]  + \
+                   [f'2019-08-{day:02d}' for day in range(1, 32)]
+
 files = [f'data/orca/{day}.tsv.gz' for day in days_to_keep]
+makedirs('data/orca_agg', exist_ok=True)
 
 def process_file(fname):
     print(f"Aggregating {fname}")

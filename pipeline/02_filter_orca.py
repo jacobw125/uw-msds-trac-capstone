@@ -15,6 +15,8 @@ from os import makedirs
 from typing import Dict
 from datetime import datetime
 
+IS_SUMMER=True
+
 if len(argv) < 2:
     raise ValueError("Missing input file")
 
@@ -27,56 +29,56 @@ COLS_TO_KEEP = [
     'institution_name',
     'business_date',
     'txn_dtm_pacific',
-    #'txn_type_id',
+    'txn_type_id',
     #'txn_subtype_id',
-    'txn_type_descr',
-    'upgrade_indicator',
+    #'txn_type_descr',
+    #'upgrade_indicator',
     #'product_id',
-    'product_descr',
+    #'product_descr',
     #'txn_passenger_type_id',
-    'txn_passenger_type_descr',
+    #'txn_passenger_type_descr',
     'passenger_count',
-    'ceffv',
+    #'ceffv',
     #'service_agency_id',
-    'service_agency_name',
+    #'service_agency_name',
     #'source_agency_id',
-    'source_agency_name',
-    'transit_operator_abbrev',
+    #'source_agency_name',
+    #'transit_operator_abbrev',
     #'mode_id',
     #'mode_abbrev',
-    'mode_descr',
+    #'mode_descr',
     'route_number',
     #'direction_id',
     'direction_descr',
-    'agency_trip_id',
-    'device_id',
+    #'agency_trip_id',
+    #'device_id',
     #'device_type',
-    'device_place_name',
+    #'device_place_name',
     #'device_place_id',
     #'device_location_id',
     #'device_location_code',
     #'device_location_abbrev',
-    'device_location_descr',
+    #'device_location_descr',
     #'origin_location_id',
     #'origin_location_code',
     #'origin_location_abbrev',
-    'origin_location_descr',
+    #'origin_location_descr',
     #'destination_location_id',
     #'destination_location_code',
     #'destination_location_abbrev',
-    'destination_location_descr',
+    #'destination_location_descr',
     #'device_id_filt',
     'stop_id',
     'stop_time',
     'stop_lat',
     'stop_lon',
-    'stop_error',
+    #'stop_error',
     #'viaserviceareaid',
     #'viaserviceareaname',
     'trip_id',
     #'last_mode_id',
     #'last_route_number',
-    'last_stop_id',
+    #'last_stop_id',
     #'last_stop_time',
     #'last_stop_lat',
     #'last_stop_lon'
@@ -90,12 +92,22 @@ def is_rapidride(row):
         return str(False) # can't parse as int
 
 
+TXN_ID_TO_DESC = {
+    '1': 'Adult',
+    '2': 'Youth',
+    '4': 'Disabled',
+    '3': 'Senior',
+    '5': 'Low Income'
+}
+
 COLS_TO_GENERATE = {
     'day_of_week': lambda row: str(datetime.strptime(row['business_date'], "%Y-%m-%d").weekday()),  # Monday is 0, Sunday is 6
     'is_rapidride': is_rapidride,
+    'txn_dtm_pacific': lambda row: row['txn_dtm_pacific'][:-7] if row['txn_dtm_pacific'].endswith('.000000') else row['txn_dtm_pacific'],
     'biz_txn_diff': lambda row: str((
             datetime.strptime(row['business_date'], "%Y-%m-%d").date() - datetime.strptime(row['txn_dtm_pacific'], "%Y-%m-%d %H:%M:%S").date()
-        ).days)
+        ).days),
+    'txn_passenger_type_descr': lambda row: TXN_ID_TO_DESC[row['txn_passenger_type_id']]
 }
 
 def null_if_empty(s): return None if s == '' else s
@@ -114,9 +126,14 @@ days_to_keep = [f'2019-01-{day:02d}' for day in range(7,32)] +  \
                [f'2019-02-{day:02d}' for day in range(13, 29)] + \
                [f'2019-03-{day:02d}' for day in range(1, 4)]
 
+if IS_SUMMER:
+    days_to_keep = [f'2019-07-{day:02d}' for day in range(1, 32)]  + \
+                   [f'2019-08-{day:02d}' for day in range(1, 32)]
+
 COLS_IN_OUTFILE = list(set(COLS_TO_KEEP + list(COLS_TO_GENERATE.keys())))
 
 print(f"Processing file {argv[1]} into data/orca/*.tsv.gz")
+makedirs('data/orca', exist_ok=True)
 n, preserved = 0, 0
 try: 
     file_handles = { day: gzip.open(f"data/orca/{day}.tsv.gz", 'wt', newline='') for day in days_to_keep }

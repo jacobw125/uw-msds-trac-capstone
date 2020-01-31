@@ -5,11 +5,17 @@ import pandas as pd
 from multiprocessing import Pool
 from os.path import basename
 
+IS_SUMMER=True
+
 days_to_keep = [f'2019-01-{day:02d}' for day in range(7,32)] +  \
                [f'2019-02-{day:02d}' for day in range(1,3)] +  \
                [f'2019-02-{day:02d}' for day in range(13, 29)] + \
                [f'2019-03-{day:02d}' for day in range(1, 4)]
 
+
+if IS_SUMMER:
+    days_to_keep = [f'2019-07-{day:02d}' for day in range(1, 32)]  + \
+                   [f'2019-08-{day:02d}' for day in range(1, 32)]
 
 cols_to_fillna = ['orca_total', 'orca_adult', 'orca_disabled', 'orca_senior', 'orca_youth', 'orca_lowincome', 'orca_uw']
 desired_column_order = [
@@ -75,75 +81,76 @@ with Pool(4) as p:
     data = pd.concat(p.map(process_file, days_to_keep))
 
 print(len(data))
-# 11,740,098 rows
-data['orca_total'].sum() / data['ons'].sum()
-# Orca is 56.6% of apc's total
-
-# For the following query, Maggie expects there to be one row, ons = 15 and orca_total = 4
-data[(data['trip_id'] == '40684352') & (data['opd_date'] == '2019-03-01') & (data['stop_id'] == '1180')].T
-# orca total is 4. 1 adult 1 disabled 2 senior
-# trip_id                           40684352
-# stop_id                               1180
-# rte                                     49
-# dir                                      N
-# direction_descr                      Outbd
-# stop_seq                                 0
-# stop_name         PIKE ST & 4TH AVE (1180)
-# ons                                     15
-# offs                                     0
-# orca_total                               4
-# orca_adult                               1
-# orca_disabled                            1
-# orca_senior                              2
-
-# Confirm that in the agg'd orca data
-orca2 = pd.read_csv(f"data/orca_agg/2019-03-01.tsv.gz", sep='\t', dtype={'trip_id': 'O', 'stop_id': 'O', 'route_number': 'O'})
-orca2[(orca2['trip_id'] == '40684352') & (orca2['stop_id'] == '1180')].T
-# business_date             2019-03-01
-# trip_id                     40684352
-# stop_id                         1180
-# orca_total                         4
-# orca_adult                         1
-# orca_disabled                      1
-# orca_senior                        2
-
-# Confirm in the raw orca data
-orca3 = pd.read_csv(f"data/orca/2019-03-01.tsv.gz", sep='\t', dtype={'trip_id': 'O', 'stop_id': 'O', 'route_number': 'O'})
-orca3[(orca3['trip_id'] == '40684352') & (orca3['stop_id'] == '1180')][['passenger_count', 'stop_id', 'trip_id', 'txn_passenger_type_descr']]
-#         passenger_count stop_id   trip_id txn_passenger_type_descr
-# 145850                1    1180  40684352                 Disabled
-# 153466                1    1180  40684352                    Adult
-# 161685                1    1180  40684352                   Senior
-# 248018                1    1180  40684352                   Senior
+if not IS_SUMMER:
+    # 11,740,098 rows
+    data['orca_total'].sum() / data['ons'].sum()
+    # Orca is 56.6% of apc's total
+    #
+    # For the following query, Maggie expects there to be one row, ons = 15 and orca_total = 4
+    data[(data['trip_id'] == '40684352') & (data['opd_date'] == '2019-03-01') & (data['stop_id'] == '1180')].T
+    # orca total is 4. 1 adult 1 disabled 2 senior
+    # trip_id                           40684352
+    # stop_id                               1180
+    # rte                                     49
+    # dir                                      N
+    # direction_descr                      Outbd
+    # stop_seq                                 0
+    # stop_name         PIKE ST & 4TH AVE (1180)
+    # ons                                     15
+    # offs                                     0
+    # orca_total                               4
+    # orca_adult                               1
+    # orca_disabled                            1
+    # orca_senior                              2
+    #
+    # Confirm that in the agg'd orca data
+    orca2 = pd.read_csv(f"data/orca_agg/2019-03-01.tsv.gz", sep='\t', dtype={'trip_id': 'O', 'stop_id': 'O', 'route_number': 'O'})
+    orca2[(orca2['trip_id'] == '40684352') & (orca2['stop_id'] == '1180')].T
+    # business_date             2019-03-01
+    # trip_id                     40684352
+    # stop_id                         1180
+    # orca_total                         4
+    # orca_adult                         1
+    # orca_disabled                      1
+    # orca_senior                        2
+    #
+    # Confirm in the raw orca data
+    orca3 = pd.read_csv(f"data/orca/2019-03-01.tsv.gz", sep='\t', dtype={'trip_id': 'O', 'stop_id': 'O', 'route_number': 'O'})
+    orca3[(orca3['trip_id'] == '40684352') & (orca3['stop_id'] == '1180')][['passenger_count', 'stop_id', 'trip_id', 'txn_passenger_type_descr']]
+    #         passenger_count stop_id   trip_id txn_passenger_type_descr
+    # 145850                1    1180  40684352                 Disabled
+    # 153466                1    1180  40684352                    Adult
+    # 161685                1    1180  40684352                   Senior
+    # 248018                1    1180  40684352                   Senior
 
 
 # Nice. Save that data.
 data.to_csv('data/merged_stops.tsv.gz', sep='\t', index=False)
 
-# Roll-up, summing over all stops in the trip_id
-trip_rollups = data.groupby([
-    'opd_date',
-    'trip_id', 
-    'rte', 
-    'dir'
-]).agg({
-    'day_of_week': 'first',
-    'vehicle_id': 'first',
-    'is_rapidride': 'first',
-    'direction_descr': 'first',
-    'apc_stop_dt': 'min',
-    'ons': 'sum',
-    'offs': 'sum', 
-    'orca_total': 'sum', 
-    'orca_adult': 'sum', 
-    'orca_disabled': 'sum', 
-    'orca_senior': 'sum', 
-    'orca_youth': 'sum', 
-    'orca_lowincome': 'sum', 
-    'orca_uw': 'sum'
-}).rename(columns={
-    'apc_stop_dt': 'first_stop_dt'
-})
-trip_rollups.head()
-trip_rollups.to_csv('data/trip_id_rollups.tsv.gz', sep='\t', index=True)
+# # Roll-up, summing over all stops in the trip_id
+# trip_rollups = data.groupby([
+#     'opd_date',
+#     'trip_id', 
+#     'rte', 
+#     'dir'
+# ]).agg({
+#     'day_of_week': 'first',
+#     'vehicle_id': 'first',
+#     'is_rapidride': 'first',
+#     'direction_descr': 'first',
+#     'apc_stop_dt': 'min',
+#     'ons': 'sum',
+#     'offs': 'sum', 
+#     'orca_total': 'sum', 
+#     'orca_adult': 'sum', 
+#     'orca_disabled': 'sum', 
+#     'orca_senior': 'sum', 
+#     'orca_youth': 'sum', 
+#     'orca_lowincome': 'sum', 
+#     'orca_uw': 'sum'
+# }).rename(columns={
+#     'apc_stop_dt': 'first_stop_dt'
+# })
+# trip_rollups.head()
+# trip_rollups.to_csv('data/trip_id_rollups.tsv.gz', sep='\t', index=True)
 
