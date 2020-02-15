@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Filters and splits the APC file into multiple .tsv.gz files, one file per day in the 
+# Filters and splits the APC file into multiple .tsv.gz files, one file per day in the
 # study period that we wish to preserve. Also nulls out some values that are suspected to be
 # outliers.
 
@@ -14,43 +14,44 @@ from os import makedirs
 from typing import Dict
 from datetime import datetime
 
-IS_SUMMER = True
+IS_SUMMER = False
 
 if len(argv) < 2:
     raise ValueError("Missing input file")
 
 COLS_TO_KEEP = [
-    #'daycode',
-    'opd_date',
-    'stop_datetime',
-    'sch_stop_tm',
-    'act_stop_tm',
-    'rte',
+    'daycode',
     'trip_id',
-    #'pattern_id',
-    #'blk',
+    'pattern_id',
+    'pattern_quality',
+    'blk',
+    'rte',
+    'dir',
+    'sch_st_min',
+    'opd_date',
+    'pattern_quality_1',
     'vehicle_id',
     'stop_id',
-    'stop_name',
     'stop_seq',
-    #'geom'
-    'dir',
-    'apc_veh',
-    'sch_st_min',
-    #'pattern_quality',
-    #'pattern_quality_1',
+    'stop_name',
     'sch_stop_sec',
     'act_stop_arr',
+    'sch_stop_tm',
+    'act_stop_tm',
     'dwell_sec',
     'doors_open',
     'door_open_sec',
+    'apc_veh',
     'ons',
     'offs',
     'load',
-    #'gps_lat',
-    #'gps_long'
+    'geom',
+    'sch_stop_tm',
+    'act_stop_tm',
+    'stop_datetime',
+    'gps_lat',
+    'gps_long'
 ]
-
 
 def is_rapidride(row):
     try:
@@ -66,14 +67,7 @@ def int_or_zero(x):
 
 COLS_TO_GENERATE = {
     'day_of_week': lambda row: str(datetime.strptime(row['opd_date'], "%Y-%m-%d").weekday()),  # Monday is 0, Sunday is 6
-    'is_rapidride': is_rapidride,
-    'door_open_sec': lambda row: None if int_or_zero(row['door_open_sec']) < 0 or int_or_zero(row['door_open_sec']) > 2000 else row['door_open_sec'],
-    'dwell_sec': lambda row: None if int_or_zero(row['dwell_sec']) < 0 or int_or_zero(row['dwell_sec']) > 2000 else row['dwell_sec'],
-    'ons': lambda row: row['ons'] if int_or_zero(row['ons']) < 150 else None,
-    'offs': lambda row: row['offs'] if int_or_zero(row['offs']) < 150 else None,
-    'opd_txn_diff': lambda row: str((
-            datetime.strptime(row['opd_date'], "%Y-%m-%d").date() - datetime.strptime(row['stop_datetime'], "%Y-%m-%d %H:%M:%S").date()
-        ).days)
+    'is_rapidride': is_rapidride
 }
 
 def null_if_empty(s): return None if s == '' else s
@@ -100,7 +94,7 @@ if IS_SUMMER:
 COLS_IN_OUTFILE = list(set(COLS_TO_KEEP + list(COLS_TO_GENERATE.keys())))
 
 n, preserved = 0, 0
-try: 
+try:
     file_handles = { day: gzip.open(f"data/apc/{day}.tsv.gz", 'wt', newline='') for day in days_to_keep }
     file_writers = { day: csv.writer(fh, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL) for day, fh in file_handles.items() }
     for writer in file_writers.values():
@@ -109,12 +103,13 @@ try:
     with (gzip.open(argv[1], 'rt') if argv[1].endswith('.gz') else open(argv[1], 'rt')) as fh:
         csvreader = csv.DictReader(fh)
         for row in csvreader:
+
             n += 1
             if n % 1e6 == 0:
                 print(f"    {n/1e6}M lines")
-            
+
             if not row['opd_date'] in days_to_keep: continue
-            
+
             for colname, generator_function in COLS_TO_GENERATE.items():
                 row[colname] = generator_function(row)
 
@@ -127,5 +122,5 @@ try:
 finally:
     for fh in file_handles.values():
         fh.close()
-                
+
 print(f"Kept {preserved} of {n} lines ({preserved/n:%})")
