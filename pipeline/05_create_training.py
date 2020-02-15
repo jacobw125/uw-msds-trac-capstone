@@ -121,7 +121,11 @@ X_COLUMNS = {
     'frac_senior': 'mean',
     'frac_li': 'mean',
     'frac_uw': 'mean',
-    'ons': 'sum'
+    'ons': 'sum',
+    'region': 'first',
+    'start': 'first',
+    'end' : 'first',
+    'type': 'first'
     # **{col: 'mean' for col in WEATHER_COLS}
 }
 
