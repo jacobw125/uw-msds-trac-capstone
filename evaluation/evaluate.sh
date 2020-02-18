@@ -26,13 +26,25 @@ python3 01_report_performance.py ../summer_data/aggregates/30min/xval.tsv.gz ../
 
 # Plots and analysis for xgboost
 mkdir xgb_30min_summer
-python3 01_report_performance.py ../summer_data/aggregates/30min/xval.tsv.gz ../predictions/.txt trip_start_hr_30 xgb_30min_summer | tee xgb_30min_summer/perf.txt
+python3 01_report_performance.py ../summer_data/aggregates/30min/xval.tsv.gz ../predictions/xgb_summer30preds.csv trip_start_hr_30 xgb_30min_summer | tee xgb_30min_summer/perf.txt
 
 mkdir xgb_30min_winter
-python3 01_report_performance.py ../winter_data/aggregates/30min/xval.tsv.gz ../predictions/.txt trip_start_hr_30 xgb_30min_winter | tee xgb_30min_winter/perf.txt
+python3 01_report_performance.py ../winter_data/aggregates/30min/xval.tsv.gz ../predictions/xgb_30min_winterval.txt trip_start_hr_30 xgb_30min_winter | tee xgb_30min_winter/perf.txt
+#AssertionError: Features and predictions need to be the same shape. Features: 22386, predictions: 22652
 
 mkdir xgb_30min_combined
-python3 01_report_performance.py ../combined_data/30min/xval.tsv.gz          ../predictions/.txt trip_start_hr_30 xgb_30min_combined | tee xgb_30min_combined/perf.txt
+python3 01_report_performance.py ../combined_data/30min/xval.tsv.gz          ../predictions/xgb_combined30preds.csv trip_start_hr_30 xgb_30min_combined | tee xgb_30min_combined/perf.txt
+
+#
+mkdir xgb_15min_summer
+python3 01_report_performance.py ../summer_data/aggregates/15min/xval.tsv.gz ../predictions/xgb_summer15preds.csv trip_start_hr_15 xgb_15min_summer | tee xgb_15min_summer/perf.txt
+
+mkdir xgb_15min_winter
+python3 01_report_performance.py ../winter_data/aggregates/15min/xval.tsv.gz ../predictions/xgb_15min_winterval.txt trip_start_hr_15 xgb_15min_winter | tee xgb_15min_winter/perf.txt
+# file not found no 15min winter
+
+mkdir xgb_15min_combined
+python3 01_report_performance.py ../combined_data/15min/xval.tsv.gz          ../predictions/xgb_combined15preds.csv trip_start_hr_15 xgb_15min_combined | tee xgb_15min_combined/perf.txt
 
 
 
