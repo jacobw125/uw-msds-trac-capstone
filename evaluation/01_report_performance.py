@@ -11,7 +11,6 @@ from os import makedirs
 plt.style.use('seaborn')
 
 rte_clusters = pd.read_csv('rte_clusters.tsv', sep='\t')
-#argv = ['', '../winter_data/aggregates/15min/xval.tsv.gz', '../predictions/linear-xval.txt', 'linear']
 
 if len(argv) != 5:
     raise ValueError("Expected args: <training or crossvalidation.tsv[.gz]> <predictions.txt> <x time var> <batch name>")
@@ -41,7 +40,7 @@ features['x_pretty'] = features[x_timevar].apply(make_pretty)
 with open(predictions_fname, 'rt') as fh:
     predictions = np.array([float(l.strip('\[\] \n')) for l in fh])
 
-assert len(predictions) == len(features), f"Features and predictions need to be the same shape. Features: {len(features)}, predictions: {len(predictions)}"
+assert len(predictions) == len(features), f"Data and predictions need to be the same shape. Data: {len(features)}, predictions: {len(predictions)}"
 
 def mape(predicted, actual):
     ae = np.abs(actual-predicted)
