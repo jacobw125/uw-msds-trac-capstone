@@ -39,7 +39,7 @@ def make_pretty(x):
 features['x_pretty'] = features[x_timevar].apply(make_pretty)
 
 with open(predictions_fname, 'rt') as fh:
-    predictions = np.array([float(l.strip()) for l in fh])
+    predictions = np.array([float(l.strip('\[\] \n')) for l in fh])
 
 assert len(predictions) == len(features), f"Features and predictions need to be the same shape. Features: {len(features)}, predictions: {len(predictions)}"
 
@@ -64,13 +64,14 @@ for trip_freq in rte_clusters.trip_freq.unique():
     #print(f"{trip_freq} freq\t{mae(preds, actual):.2f}\t{mape(preds, actual):.2%}")
 
 
-for x in (True, False):
-    actual = features.loc[features['is_inbound'] == x, 'ons']
-    preds = predictions[features['is_inbound'] == x]
-    groups.append('Inbd trip' if x else 'Outbd trip')
-    maes.append(mae(preds, actual))
-    mapes.append(mape(preds, actual))
-    #print(f"{'Inbd' if x else 'Outbd'}\t{mae(preds, actual):.2f}\t{mape(preds, actual):.2%}")
+if "is_inbound" in features.columns:
+    for x in (True, False):
+        actual = features.loc[features['is_inbound'] == x, 'ons']
+        preds = predictions[features['is_inbound'] == x]
+        groups.append('Inbd trip' if x else 'Outbd trip')
+        maes.append(mae(preds, actual))
+        mapes.append(mape(preds, actual))
+        #print(f"{'Inbd' if x else 'Outbd'}\t{mae(preds, actual):.2f}\t{mape(preds, actual):.2%}")
 
 # Weekday / weekend
 for x in (0., 1.):
@@ -113,13 +114,19 @@ err_rates = pd.DataFrame({'group': groups, 'mae': maes, 'mape': mapes}).sort_val
 print(batch)
 print(err_rates)
 
-features['mae'] = (predictions - features['on']).abs()
-by_rte = features.groupby(['rte', 'dir']).agg({'mae': 'mean'}).sort_values(ascending=False)
+features['mae'] = (predictions - features['ons']).abs()
+by_rte = features.groupby(['rte', 'dir']).agg({'mae': 'mean'}).sort_values('mae', ascending=True)
 print("Best performing routes:")
-by_rte.head()
+print(by_rte.head())
 
 print("Worst performing routes performing routes:")
-by_rte.tail()
+by_rte = features.groupby(['rte', 'dir']).agg({'mae': 'mean'}).sort_values('mae', ascending=False)
+print(by_rte.head())
+
+if 'summer' in features.columns:  # if this is combined
+    print("By season:")
+    by_season = features.groupby(['summer']).agg({'mae': 'mean'}).sort_values('mae', ascending=True)
+    print(by_season)
 
 makedirs(f'./{batch}', exist_ok=True)
 for time in time_blocks:
@@ -146,30 +153,30 @@ for time in time_blocks:
     plt.savefig(f'./{batch}/direction_{grpname}.png', bbox_inches='tight')
     plt.close()
     
+if 'is_inbound' in features.columns:
+    for time in time_blocks:
+        plt.figure(figsize=(10,8))
+        plt.xticks(rotation=45)
+        plt.title(f"Residuals over time, {time}")
+        
+        selector = (features['timeblock'] == str(time)) & (features['is_inbound'] == 1)
+        feature_grp = features.loc[selector]
+        preds_grp = predictions[selector]
+        x = feature_grp[x_timevar]
+        y = preds_grp - feature_grp['ons'].to_numpy()
+        plt.scatter(x, y, alpha=0.2, label='Inbound trip')
 
-for time in time_blocks:
-    plt.figure(figsize=(10,8))
-    plt.xticks(rotation=45)
-    plt.title(f"Residuals over time, {time}")
-    
-    selector = (features['timeblock'] == str(time)) & (features['is_inbound'] == 1)
-    feature_grp = features.loc[selector]
-    preds_grp = predictions[selector]
-    x = feature_grp[x_timevar]
-    y = preds_grp - feature_grp['ons'].to_numpy()
-    plt.scatter(x, y, alpha=0.2, label='Inbound trip')
+        selector = (features['timeblock'] == str(time)) & ~(features['is_inbound'] == 1)
+        feature_grp = features.loc[selector]
+        preds_grp = predictions[selector]
+        x = feature_grp[x_timevar]
+        y = preds_grp - feature_grp['ons'].to_numpy()
+        plt.scatter(x, y, alpha=0.2, label='Outbound trip')
 
-    selector = (features['timeblock'] == str(time)) & ~(features['is_inbound'] == 1)
-    feature_grp = features.loc[selector]
-    preds_grp = predictions[selector]
-    x = feature_grp[x_timevar]
-    y = preds_grp - feature_grp['ons'].to_numpy()
-    plt.scatter(x, y, alpha=0.2, label='Outbound trip')
-
-    plt.legend()
-    grpname = time.lower().replace(" ", "_")
-    plt.savefig(f'./{batch}/bnd_{grpname}.png', bbox_inches='tight')
-    plt.close()
+        plt.legend()
+        grpname = time.lower().replace(" ", "_")
+        plt.savefig(f'./{batch}/bnd_{grpname}.png', bbox_inches='tight')
+        plt.close()
 
 for time in time_blocks:
     plt.figure(figsize=(10,8))
@@ -211,7 +218,7 @@ for trip_freq in rte_clusters.trip_freq.unique():
         alpha=0.2, 
         s=2*features.loc[selector, 'ons'], 
         label=f'{trip_freq} freq route')
-plt.ylim(-250, 100)
+plt.ylim(-250, 250)
 plt.ylabel("Predicted - Actual")
 plt.legend()
 plt.savefig(f"./{batch}/overall_perf_weekdays.png", bbox_inches='tight')
@@ -234,3 +241,25 @@ plt.ylim(-100, 100)
 plt.ylabel("Predicted - Actual")
 plt.legend()
 plt.savefig(f"./{batch}/overall_perf_weekends.png", bbox_inches='tight')
+
+
+if 'summer' in features.columns:  # if this is combined
+    for season in (1., 0.):
+        # One big overall plot for summer or winter only
+        plt.figure(figsize=(28, 12))
+        plt.xticks(ticks, labels, rotation=45)
+        plt.xlim(1, i-4)
+        plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(base=1.0))
+        plt.title(f"{'summer' if season == 1.0 else 'winter'} cross-validation performance (Weekend)")
+        for trip_freq in rte_clusters.trip_freq.unique():
+            selector = (features['is_weekend'] == 1.) & (features['trip_freq'] == trip_freq) & (features['summer'] == season)
+            plt.scatter(
+                features.loc[selector, 'x_pretty'], 
+                predictions[selector] - features.loc[selector, 'ons'], 
+                alpha=0.3, 
+                s=2*features.loc[selector, 'ons'], 
+                label=f'{trip_freq} freq route')
+        plt.ylim(-100, 100)
+        plt.ylabel("Predicted - Actual")
+        plt.legend()
+        plt.savefig(f"./{batch}/{'summer' if season == 1.0 else 'winter'}_perf_weekends.png", bbox_inches='tight')

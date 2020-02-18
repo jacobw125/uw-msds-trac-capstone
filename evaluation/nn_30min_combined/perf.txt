@@ -1,0 +1,38 @@
+group	mae	mape
+nn_30min_combined
+                   group        mae      mape
+0   high frequency route  12.782031  0.207392
+10          Evening Peak  10.614938  0.195717
+6               EW route   9.274442  0.263389
+8           Morning Peak   8.241439  0.201953
+3                Weekday   8.232060  0.218088
+9                 Midday   7.959431  0.206360
+5               NS route   7.338330  0.217192
+1    med frequency route   6.994828  0.237037
+13       Weekend Evening   6.090426  0.252772
+4                Weekend   5.931797  0.269608
+11       Weekend Morning   5.883160  0.491192
+7          Early Morning   5.645976  0.467378
+2    low frequency route   4.604354  0.224629
+12          Weekend Peak   4.435202  0.286574
+Best performing routes:
+              mae
+rte dir          
+204 N    0.905108
+78  E    1.030495
+201 N    1.259342
+243 N    1.269399
+204 S    1.305037
+Worst performing routes performing routes:
+               mae
+rte dir           
+675 S    28.446558
+545 E    27.659744
+675 N    26.989102
+550 E    24.514459
+    W    24.203374
+By season:
+             mae
+summer          
+False   6.702038
+True    8.578385
