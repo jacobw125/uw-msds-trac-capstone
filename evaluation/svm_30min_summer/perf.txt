@@ -1,0 +1,54 @@
+group	mae	mape
+Morning Peak       7620
+Midday             6587
+Evening Peak       6242
+Weekend Evening    5186
+Night              4188
+Early Morning       807
+Weekend Peak        518
+Weekend Morning     347
+Name: timeblock, dtype: int64
+svm_30min_summer
+                       group      n        mae      mape
+7                  RapidRide   2873  89.232117  1.984306
+12            Express Region   4970  85.424787  2.573776
+0       high frequency route   6783  43.831086  0.868712
+6                   EW route   7385  36.056433  1.328568
+16             Early Morning    807  32.819476  2.255574
+21           Weekend Morning    347  30.434313  1.975048
+14         Conventional Type  25992  25.097620  0.811971
+18                    Midday   6587  24.583584  0.596409
+3                    Weekday  25444  23.992003  0.681504
+17              Morning Peak   7620  23.645878  0.638240
+24                    Summer  31495  23.626806  0.733058
+22              Weekend Peak    518  23.348205  1.453940
+19              Evening Peak   6242  23.198250  0.446568
+20                     Night   4188  23.173367  0.945302
+4                    Weekend   6051  22.091179  0.949790
+23           Weekend Evening   5186  21.407376  0.831476
+1        med frequency route  18036  20.383023  0.767546
+5                   NS route  24110  19.819556  0.550489
+8              Non-RapidRide  28622  17.041519  0.607051
+15              Trolley Type   5503  16.679792  0.360174
+9             Seattle Region  13014  12.868635  0.333062
+2        low frequency route   6676  11.862160  0.501051
+13  North King County Region   1776  11.715445  0.629268
+10  South King County Region   6347  11.266851  0.379292
+11   East King County Region   5388  11.094154  0.453225
+25                    Winter      0        NaN       NaN
+Best performing routes:
+              mae
+rte dir          
+243 N    1.622376
+78  E    1.774762
+243 S    1.847064
+308 S    2.147372
+125 N    2.507363
+Worst performing routes performing routes:
+                mae
+rte dir            
+672 W    115.555030
+555 W    115.134724
+674 N    112.972035
+    S    103.471672
+675 N     96.803487

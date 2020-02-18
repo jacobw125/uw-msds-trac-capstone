@@ -1,20 +1,41 @@
 group	mae	mape
+Morning Peak       5381
+Midday             4645
+Evening Peak       4399
+Weekend Evening    3701
+Night              3014
+Early Morning       586
+Weekend Peak        384
+Weekend Morning     276
+Name: timeblock, dtype: int64
 xgb_30min_winter
-                   group        mae      mape
-0   high frequency route  12.887665  0.229542
-6               EW route  11.546660  0.385462
-10          Evening Peak  10.715143  0.237790
-8           Morning Peak   9.802625  0.263364
-3                Weekday   9.157322  0.290443
-9                 Midday   8.991313  0.257878
-1    med frequency route   7.862161  0.308267
-5               NS route   7.723891  0.270452
-7          Early Morning   7.713767  0.922711
-12          Weekend Peak   6.557445  0.401321
-4                Weekend   6.275895  0.322808
-13       Weekend Evening   6.256413  0.298175
-11       Weekend Morning   6.145424  0.547755
-2    low frequency route   5.522344  0.345250
+                       group      n        mae      mape
+11            Express Region   3657  23.144177  0.534893
+7                  RapidRide   2083  19.644226  0.312597
+0       high frequency route   5215  12.887665  0.229542
+6                   EW route   5107  11.546660  0.385462
+19              Evening Peak   4399  10.715143  0.237790
+17              Morning Peak   5381   9.802625  0.263364
+3                    Weekday  18025   9.157322  0.290443
+18                    Midday   4645   8.991313  0.257878
+14         Conventional Type  18209   8.750545  0.309379
+25                    Winter  22386   8.595993  0.296740
+15              Trolley Type   4177   7.922248  0.241490
+1        med frequency route  12991   7.862161  0.308267
+5                   NS route  17279   7.723891  0.270452
+16             Early Morning    586   7.713767  0.922711
+8              Non-RapidRide  20303   7.462493  0.295103
+9             Seattle Region   9744   6.591032  0.232617
+22              Weekend Peak    384   6.557445  0.401321
+4                    Weekend   4361   6.275895  0.322808
+20                     Night   3014   6.268072  0.347486
+23           Weekend Evening   3701   6.256413  0.298175
+21           Weekend Morning    276   6.145424  0.547755
+10  South King County Region   4008   5.742495  0.286151
+2        low frequency route   4180   5.522344  0.345250
+13  North King County Region   1365   4.405151  0.258836
+12   East King County Region   3612   4.025384  0.253504
+24                    Summer      0        NaN       NaN
 Best performing routes:
               mae
 rte dir          
@@ -31,7 +52,3 @@ rte dir
 545 E    37.691982
 550 E    36.452018
 522 N    31.446332
-By season:
-             mae
-summer          
-False   8.595993

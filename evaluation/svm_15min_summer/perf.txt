@@ -1,0 +1,54 @@
+group	mae	mape
+Morning Peak       10040
+Midday              8551
+Evening Peak        8386
+Weekend Evening     6060
+Night               5008
+Early Morning        923
+Weekend Peak         585
+Weekend Morning      395
+Name: timeblock, dtype: int64
+svm_15min_summer
+                       group      n        mae      mape
+13            Express Region   7369  21.629804  0.508144
+7                  RapidRide   4462  21.253427  0.414313
+0       high frequency route  10784  15.127464  0.344792
+19              Evening Peak   8386  13.831155  0.359873
+6                   EW route   9748  12.512284  0.464802
+15              Trolley Type   7781  11.788010  0.424322
+3                    Weekday  32908  11.719075  0.427062
+17              Morning Peak  10040  11.540443  0.373649
+18                    Midday   8551  11.512655  0.355583
+24                    Summer  39948  11.195072  0.438944
+14         Conventional Type  32167  11.051643  0.442471
+5                   NS route  30200  10.769900  0.430591
+21           Weekend Morning    395  10.577371  0.822988
+16             Early Morning    923  10.506821  0.881766
+1        med frequency route  21951  10.218840  0.455977
+8              Non-RapidRide  35486   9.930337  0.442054
+9             Seattle Region  17545   9.339480  0.350177
+20                     Night   5008   9.116357  0.687586
+23           Weekend Evening   6060   8.805651  0.463988
+4                    Weekend   7040   8.745652  0.494452
+10  South King County Region   6986   8.651787  0.448968
+2        low frequency route   7213   8.286760  0.528536
+11   East King County Region   6165   8.098701  0.560139
+12  North King County Region   1883   7.222327  0.560999
+22              Weekend Peak    585   6.887329  0.588975
+25                    Winter      0        NaN       NaN
+Best performing routes:
+              mae
+rte dir          
+167 S    2.031071
+78  E    2.349966
+71  S    2.366679
+78  W    2.403063
+158 N    2.706385
+Worst performing routes performing routes:
+               mae
+rte dir           
+545 W    33.260113
+675 S    31.284838
+545 E    30.982520
+7   S    28.360169
+522 S    26.944514

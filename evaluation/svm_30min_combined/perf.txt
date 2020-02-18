@@ -1,0 +1,54 @@
+group	mae	mape
+Morning Peak       12761
+Midday             11018
+Evening Peak       10592
+Weekend Evening     8704
+Night               7093
+Early Morning       1398
+Weekend Peak         903
+Weekend Morning      602
+Name: timeblock, dtype: int64
+svm_30min_combined
+                       group      n        mae      mape
+7                  RapidRide   4940  75.599520  1.771173
+11            Express Region   8651  73.675891  2.318106
+0       high frequency route  11712  37.338419  0.755511
+6                   EW route  12369  33.123359  1.298203
+21           Weekend Morning    602  29.131728  1.964310
+16             Early Morning   1398  28.102526  1.919251
+18                    Midday  11018  23.902243  0.641302
+14         Conventional Type  43699  23.469477  0.825401
+19              Evening Peak  10592  22.781098  0.486357
+24                    Summer  30760  22.665986  0.740695
+3                    Weekday  42862  22.454062  0.705463
+22              Weekend Peak    903  21.629740  1.262940
+20                     Night   7093  21.082273  1.017238
+17              Morning Peak  12761  21.075920  0.639490
+25                    Winter  22311  21.043662  0.766013
+4                    Weekend  10209  20.010274  0.944317
+1        med frequency route  30649  19.518930  0.792071
+23           Weekend Evening   8704  19.211389  0.841844
+5                   NS route  40702  18.598793  0.584691
+8              Non-RapidRide  48131  16.481047  0.646192
+12  North King County Region   3055  15.770002  0.871313
+15              Trolley Type   9372  15.057428  0.405276
+13   East King County Region   8909  13.496113  0.708789
+2        low frequency route  10710  12.247213  0.629833
+10  South King County Region  10265  11.526311  0.383366
+9             Seattle Region  22191  10.932764  0.309197
+Best performing routes:
+              mae
+rte dir          
+122 N    2.487026
+177 N    2.495270
+178 S    2.543797
+22  S    2.557072
+192 N    2.593482
+Worst performing routes performing routes:
+                mae
+rte dir            
+674 N    104.221741
+672 W     99.891800
+676 N     98.035836
+674 S     91.645728
+675 N     88.615485

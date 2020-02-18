@@ -7,6 +7,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from sys import argv
 from os import makedirs
+from os.path import exists
 
 plt.style.use('seaborn')
 
@@ -51,6 +52,7 @@ def mae(predicted, actual):
     return ae.mean()
 
 groups = list()
+ns = list()
 maes = list()
 mapes = list()
 print(f"group\tmae\tmape")
@@ -58,9 +60,9 @@ for trip_freq in rte_clusters.trip_freq.unique():
     actual = features.loc[features['trip_freq'] == trip_freq, 'ons']
     preds = predictions[features['trip_freq'] == trip_freq]
     groups.append(trip_freq + ' frequency route')
+    ns.append(len(preds))
     maes.append(mae(preds, actual))
     mapes.append(mape(preds, actual))
-    #print(f"{trip_freq} freq\t{mae(preds, actual):.2f}\t{mape(preds, actual):.2%}")
 
 
 if "is_inbound" in features.columns:
@@ -68,25 +70,56 @@ if "is_inbound" in features.columns:
         actual = features.loc[features['is_inbound'] == x, 'ons']
         preds = predictions[features['is_inbound'] == x]
         groups.append('Inbd trip' if x else 'Outbd trip')
+        ns.append(len(preds))
         maes.append(mae(preds, actual))
         mapes.append(mape(preds, actual))
-        #print(f"{'Inbd' if x else 'Outbd'}\t{mae(preds, actual):.2f}\t{mape(preds, actual):.2%}")
+
 
 # Weekday / weekend
 for x in (0., 1.):
     actual = features.loc[features['is_weekend'] == x, 'ons']
     preds = predictions[features['is_weekend'] == x]
     groups.append('Weekend' if x else 'Weekday')
+    ns.append(len(preds))
     maes.append(mae(preds, actual))
     mapes.append(mape(preds, actual))
 
+#NS/EW
 for x in (True, False):
     actual = features.loc[features['is_ns'] == x, 'ons']
     preds = predictions[features['is_ns'] == x]
     groups.append('NS route' if x else 'EW route')
+    ns.append(len(preds))
     maes.append(mae(preds, actual))
     mapes.append(mape(preds, actual))
-    #print(f"{'NS' if x else 'EW'}\t{mae(preds, actual):.2f}\t{mape(preds, actual):.2%}")
+
+# RapidRide
+for x in (1., 0.):
+    actual = features.loc[features['is_rapid'] == x, 'ons']
+    preds = predictions[features['is_rapid'] == x]
+    groups.append('RapidRide' if x else 'Non-RapidRide')
+    ns.append(len(preds))
+    maes.append(mae(preds, actual))
+    mapes.append(mape(preds, actual))
+  
+# Region
+for x in features['region'].unique():
+    actual = features.loc[features['region'] == x, 'ons']
+    preds = predictions[features['region'] == x]
+    groups.append(x + ' Region')
+    ns.append(len(preds))
+    maes.append(mae(preds, actual))
+    mapes.append(mape(preds, actual))
+
+# Type
+for x in ('Conventional', 'Trolley'):
+    actual = features.loc[features['type'] == x, 'ons']
+    preds = predictions[features['type'] == x]
+    groups.append(x + ' Type')
+    ns.append(len(preds))
+    maes.append(mae(preds, actual))
+    mapes.append(mape(preds, actual))
+
 
 features['timeblock'] = np.nan
 features['hr'] = features[x_timevar].apply(lambda x: int(x.split('_')[0]))
@@ -100,18 +133,30 @@ features.loc[(features['is_weekend'] == 1.) & (features['hr'] < 6), 'timeblock']
 features.loc[(features['is_weekend'] == 1.) & (features['hr'] >= 6) & (features['hr'] < 8), 'timeblock'] = 'Weekend Peak'
 features.loc[(features['is_weekend'] == 1.) & (features['hr'] >= 8), 'timeblock'] = 'Weekend Evening'
 
-time_blocks = ('Early Morning', 'Morning Peak', 'Midday', 'Evening Peak', 'Weekend Morning', 'Weekend Peak', 'Weekend Evening')
-for x in time_blocks:
+print(features['timeblock'].value_counts())
+
+for x in features['timeblock'].unique():
     actual = features.loc[features['timeblock'] == x, 'ons']
     preds = predictions[features['timeblock'] == x]
     groups.append(x)
+    ns.append(len(preds))
     maes.append(mae(preds, actual))
     mapes.append(mape(preds, actual))
-    #print(f"{x}\t{mae(preds, actual):.2f}\t{mape(preds, actual):.2%}")
 
-err_rates = pd.DataFrame({'group': groups, 'mae': maes, 'mape': mapes}).sort_values(['mae'], ascending=False)
+if 'summer' in features.columns:
+    for x in (1., 0.):
+        actual = features.loc[features['summer'] == x, 'ons']
+        preds = predictions[features['summer'] == x]
+        groups.append('Summer' if x else 'Winter')
+        ns.append(len(preds))
+        maes.append(mae(preds, actual))
+        mapes.append(mape(preds, actual))
+
+err_rates = pd.DataFrame({'group': groups, 'n': ns, 'mae': maes, 'mape': mapes}).sort_values(['mae'], ascending=False)
 print(batch)
 print(err_rates)
+err_rates['batch'] = batch
+err_rates.to_csv('batch_compare.tsv', index=False, header=(not exists('batch_compare.tsv')), sep='\t', mode='a')
 
 features['mae'] = (predictions - features['ons']).abs()
 by_rte = features.groupby(['rte', 'dir']).agg({'mae': 'mean'}).sort_values('mae', ascending=True)
@@ -122,13 +167,8 @@ print("Worst performing routes performing routes:")
 by_rte = features.groupby(['rte', 'dir']).agg({'mae': 'mean'}).sort_values('mae', ascending=False)
 print(by_rte.head())
 
-if 'summer' in features.columns:  # if this is combined
-    print("By season:")
-    by_season = features.groupby(['summer']).agg({'mae': 'mean'}).sort_values('mae', ascending=True)
-    print(by_season)
-
 makedirs(f'./{batch}', exist_ok=True)
-for time in time_blocks:
+for time in features['timeblock'].unique():
     plt.figure(figsize=(10,8))
     plt.xticks(rotation=45)
     plt.title(f"Residuals over time, {time}")
@@ -153,7 +193,7 @@ for time in time_blocks:
     plt.close()
     
 if 'is_inbound' in features.columns:
-    for time in time_blocks:
+    for time in features['timeblock'].unique():
         plt.figure(figsize=(10,8))
         plt.xticks(rotation=45)
         plt.title(f"Residuals over time, {time}")
@@ -177,7 +217,7 @@ if 'is_inbound' in features.columns:
         plt.savefig(f'./{batch}/bnd_{grpname}.png', bbox_inches='tight')
         plt.close()
 
-for time in time_blocks:
+for time in features['timeblock'].unique():
     plt.figure(figsize=(10,8))
     plt.xticks(rotation=45)
     plt.title(f"Residuals over time, {time}")
