@@ -11,12 +11,14 @@ from os import makedirs
 plt.style.use('seaborn')
 
 rte_clusters = pd.read_csv('rte_clusters.tsv', sep='\t')
-argv = ['', '../winter_data/aggregates/15min/xval.tsv.gz', '../predictions/linear-xval.txt']
+#argv = ['', '../winter_data/aggregates/15min/xval.tsv.gz', '../predictions/linear-xval.txt', 'linear']
 
-if len(argv) < 3:
-    raise ValueError("Expected args: <training or crossvalidation.tsv[.gz]> predictions.txt")
+if len(argv) != 5:
+    raise ValueError("Expected args: <training or crossvalidation.tsv[.gz]> <predictions.txt> <x time var> <batch name>")
 
-features = pd.merge(pd.read_csv(argv[1], sep='\t'), rte_clusters, how='left', on='rte')
+_, xval_fname, predictions_fname, x_timevar, batch = argv
+
+features = pd.merge(pd.read_csv(xval_fname, sep='\t'), rte_clusters, how='left', on='rte')
 
 def make_pretty(x):
     hr, min = x.split("_", 1)
@@ -34,12 +36,12 @@ def make_pretty(x):
     
     return f'{hr}:{min:02d} {ampm}'
 
-features['x_pretty'] = features['trip_start_hr_15'].apply(make_pretty)
+features['x_pretty'] = features[x_timevar].apply(make_pretty)
 
-with open(argv[2], 'rt') as fh:
+with open(predictions_fname, 'rt') as fh:
     predictions = np.array([float(l.strip()) for l in fh])
 
-assert len(predictions) == len(features), "Features and predictions need to be the same shape"
+assert len(predictions) == len(features), f"Features and predictions need to be the same shape. Features: {len(features)}, predictions: {len(predictions)}"
 
 def mape(predicted, actual):
     ae = np.abs(actual-predicted)
@@ -87,7 +89,7 @@ for x in (True, False):
     #print(f"{'NS' if x else 'EW'}\t{mae(preds, actual):.2f}\t{mape(preds, actual):.2%}")
 
 features['timeblock'] = np.nan
-features['hr'] = features['trip_start_hr_15'].apply(lambda x: int(x.split('_')[0]))
+features['hr'] = features[x_timevar].apply(lambda x: int(x.split('_')[0]))
 features.loc[(features['is_weekend'] == 0.) & (features['hr'] < 4), 'timeblock'] = 'Early Morning'
 features.loc[(features['is_weekend'] == 0.) & (features['hr'] >= 4) & (features['hr'] < 10), 'timeblock'] = 'Morning Peak'
 features.loc[(features['is_weekend'] == 0.) & (features['hr'] >= 10) & (features['hr'] < 15), 'timeblock'] = 'Midday'
@@ -108,9 +110,18 @@ for x in time_blocks:
     #print(f"{x}\t{mae(preds, actual):.2f}\t{mape(preds, actual):.2%}")
 
 err_rates = pd.DataFrame({'group': groups, 'mae': maes, 'mape': mapes}).sort_values(['mae'], ascending=False)
+print(batch)
 print(err_rates)
 
-makedirs('./plots', exist_ok=True)
+features['mae'] = (predictions - features['on']).abs()
+by_rte = features.groupby(['rte', 'dir']).agg({'mae': 'mean'}).sort_values(ascending=False)
+print("Best performing routes:")
+by_rte.head()
+
+print("Worst performing routes performing routes:")
+by_rte.tail()
+
+makedirs(f'./{batch}', exist_ok=True)
 for time in time_blocks:
     plt.figure(figsize=(10,8))
     plt.xticks(rotation=45)
@@ -119,20 +130,20 @@ for time in time_blocks:
     selector = (features['timeblock'] == str(time)) & (features['is_ns'] == 1)
     feature_grp = features.loc[selector]
     preds_grp = predictions[selector]
-    x = feature_grp['trip_start_hr_15']
+    x = feature_grp[x_timevar]
     y = preds_grp - feature_grp['ons'].to_numpy()
     plt.scatter(x, y, alpha=0.2, label='NS route')
 
     selector = (features['timeblock'] == str(time)) & ~(features['is_ns'] == 1)
     feature_grp = features.loc[selector]
     preds_grp = predictions[selector]
-    x = feature_grp['trip_start_hr_15']
+    x = feature_grp[x_timevar]
     y = preds_grp - feature_grp['ons'].to_numpy()
     plt.scatter(x, y, alpha=0.2, label='EW route')
 
     plt.legend()
     grpname = time.lower().replace(" ", "_")
-    plt.savefig(f'./plots/direction_{grpname}.png', bbox_inches='tight')
+    plt.savefig(f'./{batch}/direction_{grpname}.png', bbox_inches='tight')
     plt.close()
     
 
@@ -144,22 +155,21 @@ for time in time_blocks:
     selector = (features['timeblock'] == str(time)) & (features['is_inbound'] == 1)
     feature_grp = features.loc[selector]
     preds_grp = predictions[selector]
-    x = feature_grp['trip_start_hr_15']
+    x = feature_grp[x_timevar]
     y = preds_grp - feature_grp['ons'].to_numpy()
     plt.scatter(x, y, alpha=0.2, label='Inbound trip')
 
     selector = (features['timeblock'] == str(time)) & ~(features['is_inbound'] == 1)
     feature_grp = features.loc[selector]
     preds_grp = predictions[selector]
-    x = feature_grp['trip_start_hr_15']
+    x = feature_grp[x_timevar]
     y = preds_grp - feature_grp['ons'].to_numpy()
     plt.scatter(x, y, alpha=0.2, label='Outbound trip')
 
     plt.legend()
     grpname = time.lower().replace(" ", "_")
-    plt.savefig(f'./plots/bnd_{grpname}.png', bbox_inches='tight')
+    plt.savefig(f'./{batch}/bnd_{grpname}.png', bbox_inches='tight')
     plt.close()
-    
 
 for time in time_blocks:
     plt.figure(figsize=(10,8))
@@ -169,12 +179,12 @@ for time in time_blocks:
         selector = (features['timeblock'] == str(time)) & (features['trip_freq'] == str(trip_freq))
         feature_grp = features.loc[selector]
         preds_grp = predictions[selector]
-        x = feature_grp['trip_start_hr_15']
+        x = feature_grp[x_timevar]
         y = preds_grp - feature_grp['ons'].to_numpy()
         plt.scatter(x, y, alpha=0.2, label=trip_freq + " frequency route")
     plt.legend()
     grpname = time.lower().replace(" ", "_")
-    plt.savefig(f'./plots/freq_{grpname}.png', bbox_inches='tight')
+    plt.savefig(f'./{batch}/freq_{grpname}.png', bbox_inches='tight')
     plt.close()
 
 # One big overall plot
@@ -204,7 +214,7 @@ for trip_freq in rte_clusters.trip_freq.unique():
 plt.ylim(-250, 100)
 plt.ylabel("Predicted - Actual")
 plt.legend()
-plt.savefig("./plots/overall_perf_weekdays.png", bbox_inches='tight')
+plt.savefig(f"./{batch}/overall_perf_weekdays.png", bbox_inches='tight')
 
 # One big overall plot
 plt.figure(figsize=(28, 12))
@@ -223,4 +233,4 @@ for trip_freq in rte_clusters.trip_freq.unique():
 plt.ylim(-100, 100)
 plt.ylabel("Predicted - Actual")
 plt.legend()
-plt.savefig("./plots/overall_perf_weekends.png", bbox_inches='tight')
+plt.savefig(f"./{batch}/overall_perf_weekends.png", bbox_inches='tight')
