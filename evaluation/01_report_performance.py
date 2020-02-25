@@ -21,7 +21,11 @@ _, xval_fname, predictions_fname, x_timevar, batch = argv
 features = pd.merge(pd.read_csv(xval_fname, sep='\t'), rte_clusters, how='left', on='rte')
 
 def make_pretty(x):
-    hr, min = x.split("_", 1)
+    if type(x) == type(1): 
+        hr = x
+        min = 0
+    else:
+        hr, min = x.split("_", 1)
     hr = int(hr)
     min = int(min)
     if hr > 24:
@@ -122,7 +126,7 @@ for x in ('Conventional', 'Trolley'):
 
 
 features['timeblock'] = np.nan
-features['hr'] = features[x_timevar].apply(lambda x: int(x.split('_')[0]))
+features['hr'] = features[x_timevar].apply(lambda x: x if type(x) == type(1) else int(x.split('_')[0]))
 features.loc[(features['is_weekend'] == 0.) & (features['hr'] < 4), 'timeblock'] = 'Early Morning'
 features.loc[(features['is_weekend'] == 0.) & (features['hr'] >= 4) & (features['hr'] < 10), 'timeblock'] = 'Morning Peak'
 features.loc[(features['is_weekend'] == 0.) & (features['hr'] >= 10) & (features['hr'] < 15), 'timeblock'] = 'Midday'
@@ -132,8 +136,6 @@ features.loc[(features['is_weekend'] == 0.) & (features['hr'] >= 19), 'timeblock
 features.loc[(features['is_weekend'] == 1.) & (features['hr'] < 6), 'timeblock'] = 'Weekend Morning'
 features.loc[(features['is_weekend'] == 1.) & (features['hr'] >= 6) & (features['hr'] < 8), 'timeblock'] = 'Weekend Peak'
 features.loc[(features['is_weekend'] == 1.) & (features['hr'] >= 8), 'timeblock'] = 'Weekend Evening'
-
-print(features['timeblock'].value_counts())
 
 for x in features['timeblock'].unique():
     actual = features.loc[features['timeblock'] == x, 'ons']
@@ -161,11 +163,40 @@ err_rates.to_csv('batch_compare.tsv', index=False, header=(not exists('batch_com
 features['mae'] = (predictions - features['ons']).abs()
 by_rte = features.groupby(['rte', 'dir']).agg({'mae': 'mean'}).sort_values('mae', ascending=True)
 print("Best performing routes:")
-print(by_rte.head())
+print(by_rte.head(n=10))
 
 print("Worst performing routes performing routes:")
 by_rte = features.groupby(['rte', 'dir']).agg({'mae': 'mean'}).sort_values('mae', ascending=False)
-print(by_rte.head())
+print(by_rte.head(n=10))
+
+if "15" in x_timevar:
+    x_ticks = range(0, 4*24)
+    x_labs = list()
+    for hr in range(0,24):
+        for m in ('00', '15', '30', '45'):
+            x_labs.append(make_pretty(f'{hr}_{m}'))
+        
+elif "30" in x_timevar:
+    x_ticks = range(0, 2*24)
+    x_labs = list()
+    for hr in range(0,24):
+        for m in ('00', '30'):
+            x_labs.append(make_pretty(f'{hr}_{m}'))
+
+elif "hr" in x_timevar:
+    x_ticks = range(0, 24)
+    x_labs = [make_pretty(x) for x in x_ticks]
+
+features = pd.merge(
+    features,
+    pd.DataFrame({
+        'x_ticks': x_ticks,
+        'x_labs': x_labs
+    }),
+    how='left',
+    left_on=['x_pretty'],
+    right_on=['x_labs']
+)
 
 makedirs(f'./{batch}', exist_ok=True)
 for time in features['timeblock'].unique():
@@ -233,26 +264,18 @@ for time in features['timeblock'].unique():
     plt.savefig(f'./{batch}/freq_{grpname}.png', bbox_inches='tight')
     plt.close()
 
-# One big overall plot
+# One big overall plot (WEEKDAYS)
 import matplotlib.ticker as ticker
 
-ticks, labels = list(), list()
-i = 0
-for hr in range(0, 25):
-    for min in ('00', '15', '30', '45'):
-        ticks.append(i)
-        labels.append(make_pretty(f'{hr}_{min}'))
-        i+=1
-
 plt.figure(figsize=(28, 12))
-plt.xticks(ticks, labels, rotation=45)
-plt.xlim(1, i-4)
+plt.xticks(x_ticks, x_labs, rotation=45)
+#plt.xlim(1, i-4)
+#plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(base=1.0))
 plt.title("Cross-validation performance (Weekday)")
-plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(base=1.0))
 for trip_freq in rte_clusters.trip_freq.unique():
     selector = (features['is_weekend'] == 0.) & (features['trip_freq'] == trip_freq)
     plt.scatter(
-        features.loc[selector, 'x_pretty'], 
+        features.loc[selector, 'x_ticks'], 
         predictions[selector] - features.loc[selector, 'ons'], 
         alpha=0.2, 
         s=2*features.loc[selector, 'ons'], 
@@ -262,16 +285,16 @@ plt.ylabel("Predicted - Actual")
 plt.legend()
 plt.savefig(f"./{batch}/overall_perf_weekdays.png", bbox_inches='tight')
 
-# One big overall plot
+# One big overall plot (WEEKENDS)
 plt.figure(figsize=(28, 12))
-plt.xticks(ticks, labels, rotation=45)
-plt.xlim(1, i-4)
-plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(base=1.0))
+plt.xticks(x_ticks, x_labs, rotation=45)
+#plt.xlim(1, i-4)
+#plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(base=1.0))
 plt.title("Cross-validation performance (Weekend)")
 for trip_freq in rte_clusters.trip_freq.unique():
     selector = (features['is_weekend'] == 1.) & (features['trip_freq'] == trip_freq)
     plt.scatter(
-        features.loc[selector, 'x_pretty'], 
+        features.loc[selector, 'x_ticks'], 
         predictions[selector] - features.loc[selector, 'ons'], 
         alpha=0.3, 
         s=2*features.loc[selector, 'ons'], 
@@ -286,14 +309,14 @@ if 'summer' in features.columns:  # if this is combined
     for season in (1., 0.):
         # One big overall plot for summer or winter only
         plt.figure(figsize=(28, 12))
-        plt.xticks(ticks, labels, rotation=45)
-        plt.xlim(1, i-4)
-        plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(base=1.0))
+        plt.xticks(x_ticks, x_labs, rotation=45)
+        #plt.xlim(1, i-4)
+        #plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(base=1.0))
         plt.title(f"{'summer' if season == 1.0 else 'winter'} cross-validation performance (Weekend)")
         for trip_freq in rte_clusters.trip_freq.unique():
             selector = (features['is_weekend'] == 1.) & (features['trip_freq'] == trip_freq) & (features['summer'] == season)
             plt.scatter(
-                features.loc[selector, 'x_pretty'], 
+                features.loc[selector, 'x_ticks'], 
                 predictions[selector] - features.loc[selector, 'ons'], 
                 alpha=0.3, 
                 s=2*features.loc[selector, 'ons'], 

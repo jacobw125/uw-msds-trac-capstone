@@ -1,0 +1,55 @@
+group	mae	mape
+final_nn_30min
+                       group      n        mae      mape
+7                  RapidRide   5000  18.959872  0.274782
+11            Express Region   8562  18.512713  0.326436
+0       high frequency route  11926  12.674768  0.210080
+19              Evening Peak  10436  10.100985  0.199563
+6                   EW route  12479   9.054126  0.253316
+24                    Summer  31148   8.498067  0.251385
+17              Morning Peak  12849   8.446305  0.206452
+3                    Weekday  42883   8.238425  0.225133
+15              Trolley Type   9339   8.220340  0.218120
+18                    Midday  10990   8.194809  0.208807
+14         Conventional Type  43830   7.677595  0.237581
+5                   NS route  40690   7.380003  0.228286
+1        med frequency route  30595   6.973062  0.243924
+25                    Winter  22021   6.747239  0.209787
+9             Seattle Region  22403   6.666941  0.204452
+8              Non-RapidRide  48169   6.611709  0.229933
+23           Weekend Evening   8774   5.980872  0.253000
+16             Early Morning   1429   5.848937  0.486428
+4                    Weekend  10286   5.832237  0.271891
+20                     Night   7179   5.701188  0.269887
+21           Weekend Morning    597   5.545092  0.495698
+10  South King County Region  10173   5.158574  0.226221
+22              Weekend Peak    915   4.594313  0.310132
+2        low frequency route  10648   4.581015  0.233204
+12   East King County Region   8954   4.481218  0.233518
+13  North King County Region   3077   4.163285  0.221444
+Best performing routes:
+              mae
+rte dir          
+201 S    0.185386
+204 S    0.975385
+    N    1.093846
+201 N    1.108965
+192 N    1.112212
+309 N    1.199140
+193 N    1.231608
+243 N    1.258411
+237 S    1.311215
+78  W    1.334139
+Worst performing routes performing routes:
+               mae
+rte dir           
+675 S    28.968749
+545 E    25.830149
+    W    25.243936
+550 W    23.995530
+674 N    23.523552
+309 S    22.158577
+675 N    22.098061
+673 S    21.767920
+674 S    20.762116
+673 N    20.550557

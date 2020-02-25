@@ -1,13 +1,4 @@
 group	mae	mape
-Morning Peak       12761
-Midday             11018
-Evening Peak       10592
-Weekend Evening     8704
-Night               7093
-Early Morning       1398
-Weekend Peak         903
-Weekend Morning      602
-Name: timeblock, dtype: int64
 nn_30min_combined
                        group      n        mae      mape
 7                  RapidRide   4940  19.018787  0.273759
@@ -44,6 +35,11 @@ rte dir
 201 N    1.259342
 243 N    1.269399
 204 S    1.305037
+22  S    1.347351
+243 S    1.401928
+192 N    1.440346
+224 W    1.520372
+192 S    1.525993
 Worst performing routes performing routes:
                mae
 rte dir           
@@ -52,3 +48,8 @@ rte dir
 675 N    26.989102
 550 E    24.514459
     W    24.203374
+545 W    23.792200
+674 S    22.180004
+    N    20.848445
+671 N    20.494290
+    S    19.973120

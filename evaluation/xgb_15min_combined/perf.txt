@@ -1,13 +1,4 @@
 group	mae	mape
-Morning Peak       16918
-Midday             14599
-Evening Peak       14190
-Weekend Evening    10266
-Night               8618
-Early Morning       1608
-Weekend Peak        1026
-Weekend Morning      651
-Name: timeblock, dtype: int64
 xgb_15min_combined
                        group      n        mae      mape
 12            Express Region  12355  17.654874  0.475810
@@ -44,6 +35,11 @@ rte dir
 197 N    2.529529
 224 E    2.619758
 167 S    2.791481
+269 N    2.833419
+241 N    2.834595
+238 S    2.841108
+78  W    2.953864
+277 W    2.976050
 Worst performing routes performing routes:
                mae
 rte dir           
@@ -52,3 +48,8 @@ rte dir
 522 S    24.504562
 550 W    23.952829
 675 S    23.494616
+550 E    23.204444
+522 N    21.471863
+675 N    20.372242
+674 N    18.118916
+673 S    18.070289

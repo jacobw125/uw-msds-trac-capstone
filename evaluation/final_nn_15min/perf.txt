@@ -1,0 +1,55 @@
+group	mae	mape
+final_nn_15min
+                       group      n        mae      mape
+12            Express Region  12390  14.508367  0.336581
+7                  RapidRide   7700  14.446218  0.273142
+0       high frequency route  19210   9.320638  0.222018
+19              Evening Peak  13982   8.580115  0.213011
+6                   EW route  16002   7.372862  0.266516
+24                    Summer  39342   7.146068  0.258527
+3                    Weekday  55745   6.879200  0.234122
+17              Morning Peak  16972   6.735264  0.219842
+14         Conventional Type  53794   6.696891  0.239427
+18                    Midday  14541   6.682858  0.211178
+5                   NS route  51697   6.339424  0.230805
+15              Trolley Type  13905   6.145791  0.238611
+1        med frequency route  36805   5.881463  0.248534
+25                    Winter  28357   5.803476  0.212486
+21           Weekend Morning    630   5.714395  0.486963
+8              Non-RapidRide  59999   5.574658  0.234892
+16             Early Morning   1600   5.555885  0.537118
+23           Weekend Evening  10292   5.281021  0.245907
+9             Seattle Region  30766   5.239377  0.207962
+4                    Weekend  11954   5.205684  0.263230
+20                     Night   8650   4.987060  0.280253
+10  South King County Region  11355   4.782623  0.235197
+2        low frequency route  11684   4.295878  0.238488
+22              Weekend Peak   1032   4.143808  0.302920
+11   East King County Region   9889   3.884631  0.224790
+13  North King County Region   3299   3.647957  0.221889
+Best performing routes:
+              mae
+rte dir          
+201 N    0.236811
+204 N    0.733118
+243 S    0.763089
+192 N    0.862074
+    S    1.185325
+113 S    1.197646
+243 N    1.288572
+167 N    1.337893
+204 S    1.382395
+114 N    1.396955
+Worst performing routes performing routes:
+               mae
+rte dir           
+675 S    22.559525
+    N    21.429923
+545 E    20.226285
+    W    19.034949
+550 W    18.979092
+522 S    16.350009
+674 N    16.209654
+    S    15.878035
+522 N    15.643923
+671 S    15.426847
