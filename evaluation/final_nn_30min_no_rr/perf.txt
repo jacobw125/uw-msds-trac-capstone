@@ -1,0 +1,55 @@
+group	mae	mape
+final_nn_30min_no_rr
+                       group      n        mae      mape
+11            Express Region   3562  20.247073  0.456153
+6                   EW route  11088   9.429304  0.261923
+19              Evening Peak   9728   9.341374  0.198901
+0       high frequency route   7556   8.742444  0.175859
+15              Trolley Type   9339   8.634537  0.217594
+17              Morning Peak  11839   7.876232  0.207582
+24                    Summer  28208   7.726934  0.247006
+3                    Weekday  39221   7.496127  0.223501
+1        med frequency route  29965   7.318033  0.242245
+18                    Midday  10098   7.265287  0.209311
+8              Non-RapidRide  48169   6.991281  0.228473
+9             Seattle Region  22403   6.931110  0.198108
+14         Conventional Type  38830   6.596062  0.231086
+5                   NS route  37081   6.262261  0.218453
+25                    Winter  19961   5.951690  0.202249
+10  South King County Region  10173   5.320326  0.217368
+16             Early Morning   1137   5.101834  0.547523
+23           Weekend Evening   7761   4.879665  0.232338
+2        low frequency route  10648   4.829100  0.227156
+20                     Night   6419   4.785847  0.256572
+4                    Weekend   8948   4.778433  0.250301
+12   East King County Region   8954   4.677328  0.230347
+21           Weekend Morning    420   4.518932  0.516952
+13  North King County Region   3077   4.342158  0.217573
+22              Weekend Peak    767   3.896204  0.290640
+7                  RapidRide      0        NaN       NaN
+Best performing routes:
+              mae
+rte dir          
+201 S    0.340429
+309 N    0.437967
+201 N    0.721408
+204 S    0.938751
+    N    1.042188
+243 N    1.123654
+    S    1.176056
+237 S    1.232911
+192 N    1.263899
+    S    1.330063
+Worst performing routes performing routes:
+               mae
+rte dir           
+545 W    29.536694
+    E    27.687729
+309 S    27.665958
+550 W    26.287593
+522 N    24.031484
+550 E    20.973856
+522 S    20.838558
+312 N    16.749525
+102 S    16.704449
+554 W    15.865927

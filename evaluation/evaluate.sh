@@ -12,6 +12,19 @@ mkdir final_nn_hr
 python3 01_report_performance.py ../combined_data/hr/test.tsv.gz ../predictions/final_nn_hr_test.txt trip_start_hr final_nn_hr | tee final_nn_hr/perf.txt
 
 
+
+###################### Final models (test without rapid ride)
+mkdir final_nn_15min_no_rr
+python3 01_report_performance.py ../combined_data/15min/test_no_rr.tsv.gz ../predictions/final_nn_15min_test.txt trip_start_hr_15 final_nn_15min_no_rr | tee final_nn_15min_no_rr/perf.txt
+
+mkdir final_nn_30min_no_rr
+python3 01_report_performance.py ../combined_data/30min/test_no_rr.tsv.gz ../predictions/final_nn_30min_test.txt trip_start_hr_30 final_nn_30min_no_rr | tee final_nn_30min_no_rr/perf.txt
+
+mkdir final_nn_hr_no_rr
+python3 01_report_performance.py ../combined_data/hr/test_no_rr.tsv.gz ../predictions/final_nn_hr_test.txt trip_start_hr final_nn_hr_no_rr | tee final_nn_hr_no_rr/perf.txt
+
+
+
 ###################### Plots for neural net
 #30m
 mkdir nn_30min_combined

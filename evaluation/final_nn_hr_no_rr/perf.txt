@@ -1,0 +1,55 @@
+group	mae	mape
+final_nn_hr_no_rr
+                       group      n        mae      mape
+13            Express Region   2210  27.483199  0.472169
+6                   EW route   7145  13.008191  0.289794
+19              Evening Peak   6217  12.901770  0.190627
+0       high frequency route   4341  12.305016  0.189858
+15              Trolley Type   5546  11.179293  0.234696
+17              Morning Peak   7592  10.470687  0.220819
+24                    Summer  18391  10.462360  0.269496
+3                    Weekday  25205  10.028288  0.239384
+1        med frequency route  18608   9.913876  0.256055
+18                    Midday   6075   9.880601  0.218331
+9             Seattle Region  13818   9.318114  0.213858
+8              Non-RapidRide  31534   9.268288  0.248166
+14         Conventional Type  25988   8.860468  0.251035
+5                   NS route  24389   8.172646  0.235933
+25                    Winter  13143   7.597423  0.218322
+12   East King County Region   5810   6.714810  0.257230
+10  South King County Region   7488   6.666622  0.244480
+23           Weekend Evening   5417   6.475608  0.262747
+20                     Night   4331   6.424257  0.307333
+2        low frequency route   8585   6.333457  0.260650
+11  North King County Region   2208   6.267174  0.226886
+4                    Weekend   6329   6.241618  0.283207
+16             Early Morning    990   5.263779  0.526407
+22              Weekend Peak    523   5.108181  0.287904
+21           Weekend Morning    389   4.507066  0.571155
+7                  RapidRide      0        NaN       NaN
+Best performing routes:
+              mae
+rte dir          
+243 N    1.130177
+    S    1.179948
+154 N    1.213892
+204 N    1.428475
+201 N    1.463121
+192 N    1.466306
+237 N    1.530724
+204 S    1.546300
+201 S    1.705462
+37  S    1.763812
+Worst performing routes performing routes:
+               mae
+rte dir           
+545 W    39.621871
+    E    37.295047
+550 W    36.964473
+    E    31.652086
+522 N    27.507354
+    S    24.433377
+312 N    24.117195
+554 W    23.567846
+541 W    22.735582
+556 W    22.545145
