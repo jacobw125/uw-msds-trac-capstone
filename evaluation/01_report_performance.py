@@ -280,13 +280,13 @@ for trip_freq in rte_clusters.trip_freq.unique():
         alpha=0.2, 
         s=2*features.loc[selector, 'ons'], 
         label=f'{trip_freq} freq route')
-plt.ylim(-250, 250)
+plt.ylim(-200, 200)
 plt.ylabel("Predicted - Actual")
 plt.legend()
 plt.savefig(f"./{batch}/overall_perf_weekdays.png", bbox_inches='tight')
 
 # One big overall plot (WEEKENDS)
-plt.figure(figsize=(28, 12))
+plt.figure(figsize=(28, 6))
 plt.xticks(x_ticks, x_labs, rotation=45)
 #plt.xlim(1, i-4)
 #plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(base=1.0))
@@ -299,7 +299,7 @@ for trip_freq in rte_clusters.trip_freq.unique():
         alpha=0.3, 
         s=2*features.loc[selector, 'ons'], 
         label=f'{trip_freq} freq route')
-plt.ylim(-100, 100)
+plt.ylim(-50, 50)
 plt.ylabel("Predicted - Actual")
 plt.legend()
 plt.savefig(f"./{batch}/overall_perf_weekends.png", bbox_inches='tight')
