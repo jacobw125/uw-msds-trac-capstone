@@ -1,0 +1,170 @@
+rte,type,start,end,region
+22,Conventional,Alaska Junction,Arbor Heights,Seattle
+301,Conventional,Downtown Seattle,Aurora Village Transit Center,North King County
+346,Conventional,Northgate Transit Center,Aurora Village Transit Center,North King County
+373,Conventional,University District,Aurora Village Transit Center,North King County
+248,Conventional,Kirkland Transit Center,Avondale,East King County
+216,Conventional,Downtown Seattle,Bear Creek P&R,East King County
+545,Conventional,Downtown Seattle,Bear Creek P&R,Express
+226,Conventional,Eastgate P&R,Bellevue,East King County
+232,Conventional,Duvall,Bellevue,East King County
+234,Conventional,Kenmore,Bellevue,East King County
+235,Conventional,Kingsgate,Bellevue,East King County
+555,Conventional,Northgate Transit Center,Bellevue,Express
+672,Conventional,Redmond,Bellevue,Express
+550,Conventional,Downtown Seattle,Bellevue,Express
+143,Conventional,Downtown Seattle,Black Diamond,South King County
+312,Conventional,Downtown Seattle,Bothell,North King County
+372,Conventional,University District,Bothell,North King County
+120,Conventional,Downtown Seattle,Burien Transit Center,South King County
+131,Conventional,Downtown Seattle,Burien Transit Center,South King County
+132,Conventional,Downtown Seattle,Burien Transit Center,South King County
+10,Trolley,Downtown Seattle,Capitol Hill,Seattle
+63,Conventional,Northgate Transit Center,Cherry Hill,Seattle
+64,Conventional,Jackson Park,Cherry Hill,Seattle
+31,Conventional,Central Magnolia,Children's Hospital,Seattle
+32,Conventional,Seattle Center,Children's Hospital,Seattle
+67,Conventional,Northgate Transit Center,Children's Hospital,Seattle
+246,Conventional,Eastgate P&R,Clyde Hill,East King County
+27,Conventional,Downtown Seattle,Colman Park,Seattle
+119,Conventional,Vashon Island Ferry Terminal,Dockton,South King County
+1,Trolley,Kinnear,Downtown Seattle,Seattle
+5,Conventional,Shoreline,Downtown Seattle,Seattle
+13,Trolley,Seattle Pacific University,Downtown Seattle,Seattle
+15,Conventional,Blue Ridge,Downtown Seattle,Seattle
+17,Conventional,Sunset Hill,Downtown Seattle,Seattle
+18,Conventional,North Beach,Downtown Seattle,Seattle
+19,Conventional,West Magnolia,Downtown Seattle,Seattle
+24,Conventional,West Magnolia,Downtown Seattle,Seattle
+26,Conventional,Northgate Transit Center,Downtown Seattle,Seattle
+28,Conventional,Carkeek Park,Downtown Seattle,Seattle
+29,Conventional,Ballard,Downtown Seattle,Seattle
+33,Conventional,East Magnolia,Downtown Seattle,Seattle
+37,Conventional,West Seattle,Downtown Seattle,Seattle
+40,Conventional,Northgate Transit Center,Downtown Seattle,Seattle
+41,Conventional,Lake City,Downtown Seattle,Seattle
+49,Trolley,University District,Downtown Seattle,Seattle
+55,Conventional,Admiral District,Downtown Seattle,Seattle
+56,Conventional,Alki Point,Downtown Seattle,Seattle
+57,Conventional,Alaska Junction,Downtown Seattle,Seattle
+70,Trolley,University District,Downtown Seattle,Seattle
+76,Conventional,Wedgwood,Downtown Seattle,Seattle
+77,Conventional,North City,Downtown Seattle,Seattle
+157,Conventional,Lake Meridian P&R,Downtown Seattle,South King County
+218,Conventional,Issaquah,Downtown Seattle,East King County
+255,Conventional,Brickyard P&R,Downtown Seattle,East King County
+674,Conventional,Crown Hill,Downtown Seattle,Express
+675,Conventional,Aurora Village Transit Center,Downtown Seattle,Express
+212,Conventional,Downtown Seattle,Eastgate P&R,East King County
+241,Conventional,Bellevue,Eastgate P&R,East King County
+221,Conventional,Eastgate P&R,Education Hill,East King County
+186,Conventional,Auburn Station,Enumclaw,South King County
+245,Conventional,Kirkland Transit Center,Factoria,East King County
+102,Conventional,Downtown Seattle,Fairwood,South King County
+148,Conventional,Renton,Fairwood,South King County
+116,Conventional,Downtown Seattle,Fauntleroy Ferry Terminal,South King County
+193,Conventional,First Hill,Federal Way,South King County
+177,Conventional,Downtown Seattle,Federal Way,South King County
+671,Conventional,Tukwila,Federal Way,Express
+164,Conventional,Kent Station,Green River College,South King County
+181,Conventional,Twin Lakes,Green River College,South King County
+121,Conventional,Downtown Seattle,Highline College,South King County
+122,Conventional,Downtown Seattle,Highline College,South King County
+308,Conventional,Downtown Seattle,Horizon View,North King County
+12,Trolley,Downtown Seattle,Interlaken Park,Seattle
+214,Conventional,Downtown Seattle,Issaquah,East King County
+554,Conventional,Downtown Seattle,Issaquah,Express
+556,Conventional,Northgate Transit Center,Issaquah,Express
+4,Trolley,Seattle Pacific University,Judkins Park,Seattle
+309,Conventional,First Hill,Kenmore,North King County
+331,Conventional,Shoreline,Kenmore,North King County
+150,Conventional,Downtown Seattle,Kent Station,South King County
+166,Conventional,Burien Transit Center,Kent Station,South King County
+169,Conventional,Renton,Kent Station,South King County
+183,Conventional,Federal Way,Kent Station,South King County
+252,Conventional,Downtown Seattle,Kingsgate,East King County
+257,Conventional,Downtown Seattle,Kingsgate,East King County
+540,Conventional,University District,Kirkland Transit Center,Express
+111,Conventional,Downtown Seattle,Lake Kathleen,South King County
+158,Conventional,Downtown Seattle,Lake Meridian P&R,South King County
+11,Conventional,Downtown Seattle,Madison Park,Seattle
+3,Trolley,Seattle Pacific University,Madrona,Seattle
+2,Trolley,West Queen Anne,Madrona,Seattle
+168,Conventional,Kent Station,Maple Valley,South King County
+316,Conventional,Downtown Seattle,Meridian Park,North King County
+14,Trolley,Downtown Seattle,Mount Baker,Seattle
+8,Conventional,Seattle Center,Mount Baker,Seattle
+48,Conventional,University District,Mount Baker,Seattle
+347,Conventional,Northgate Transit Center,Mountlake Terrace Transit Center,North King County
+208,Conventional,Issaquah,North Bend,East King County
+217,Conventional,Downtown Seattle,North Issaquah,East King County
+182,Conventional,Federal Way,Northeast Tacoma (crosses into Pierce County),South King County
+36,Trolley,Downtown Seattle,Othello Station,Seattle
+50,Conventional,Alki Point,Othello Station,Seattle
+269,Conventional,Issaquah,Overlake,East King County
+541,Conventional,University District,Overlake,Express
+243,Conventional,Kenmore,Overlake,East King County
+244,Conventional,Kenmore,Overlake,East King County
+7,Trolley,Downtown Seattle,Rainier Beach,Seattle
+9,Conventional,Capitol Hill,Rainier Beach station,Seattle
+219,Conventional,Downtown Seattle,Redmond,East King County
+268,Conventional,Downtown Seattle,Redmond,East King County
+224,Conventional,Duvall,Redmond,East King County
+542,Conventional,Green Lake,Redmond,Express
+190,Conventional,Downtown Seattle,Redondo Heights P&R,South King County
+676,Conventional,Burien Transit Center,Renton,Express
+105,Conventional,Renton,Renton,South King County
+114,Conventional,Downtown Seattle,Renton,South King County
+106,Conventional,International District/Chinatown station,Renton,South King County
+107,Conventional,Beacon Hill station,Renton,South King County
+153,Conventional,Kent Station,Renton,South King County
+240,Conventional,Bellevue,Renton,East King County
+342,Conventional,Shoreline,Renton,North King County
+304,Conventional,Downtown Seattle,Richmond Beach,North King County
+348,Conventional,Northgate Transit Center,Richmond Beach,North King County
+62,Conventional,Downtown Seattle,Sand Point,Seattle
+123,Conventional,Downtown Seattle,Seahurst,South King County
+330,Conventional,Lake City,Shoreline,North King County
+345,Conventional,Northgate Transit Center,Shoreline,North King County
+355,Conventional,Downtown Seattle,Shoreline,North King County
+303,Conventional,First Hill,Shoreline,North King County
+113,Conventional,Downtown Seattle,Shorewood,South King County
+249,Conventional,Overlake,South Bellevue P&R,East King County
+178,Conventional,Downtown Seattle,South Federal Way P&R,South King County
+204,Conventional,North Mercer Island,South Mercer Island,East King County
+101,Conventional,Downtown Seattle,South Renton P&R,South King County
+167,Conventional,University District,South Renton P&R,South King County
+128,Conventional,Admiral District,Southcenter,South King County
+156,Conventional,Highline College,Southcenter,South King County
+180,Conventional,Burien Transit Center,Southeast Auburn,South King County
+192,Conventional,Downtown Seattle,Star Lake P&R,South King County
+47,Trolley,Downtown Seattle,Summit,Seattle
+200,Conventional,Issaquah,Swedish Medical Center Issaquah,East King County
+118,Conventional,Vashon Island Ferry Terminal,Tahlequah Ferry Terminal,South King County
+159,Conventional,Downtown Seattle,Timberlane,South King County
+124,Conventional,Downtown Seattle,Tukwila,South King County
+154,Conventional,Federal Center South,Tukwila,South King County
+187,Conventional,Federal Way,Twin Lakes,South King County
+179,Conventional,Downtown Seattle,Twin Lakes,South King County
+197,Conventional,University District,Twin Lakes,South King County
+43,Trolley,Downtown Seattle,University District,Seattle
+65,Conventional,Jackson Park,University District,Seattle
+74,Conventional,Sand Point,University District,Seattle
+75,Conventional,Northgate Transit Center,University District,Seattle
+271,Conventional,Issaquah,University District,East King County
+44,Trolley,Ballard,University District,Seattle
+45,Conventional,Loyal Heights,University District,Seattle
+71,Conventional,Wedgwood,University District,Seattle
+73,Conventional,Jackson Park,University District,Seattle
+78,Conventional,Children's Hospital,University District,Seattle
+277,Conventional,Juanita,University District,East King County
+21,Conventional,Downtown Seattle,Westwood Village,Seattle
+60,Conventional,Capitol Hill,Westwood Village,Seattle
+125,Conventional,Downtown Seattle,Westwood Village,South King County
+673,Conventional,South Lake Union,Westwood Village,Express
+236,Conventional,Kirkland Transit Center,Woodinville,East King County
+237,Conventional,Bellevue,Woodinville,East King County
+311,Conventional,Downtown Seattle,Woodinville,North King County
+522,Conventional,Downtown Seattle,Woodinville,Express
+238,Conventional,Kirkland Transit Center,Woodinville,East King County
+201,Conventional,Unknown,Unknown,East King County
