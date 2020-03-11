@@ -1,6 +1,8 @@
-#!/usr/bin/env python3
-# Remember, each line in the APC file represents one stop. But each line in the Orca file represents a transaction!
-# This script 'rolls up' the Orca file so that each line represents a stop.
+# pylint: disable=C0103
+"""
+Remember, each line in the APC file represents one stop. But each line in the Orca file represents a transaction!
+This script 'rolls up' the Orca file so that each line represents a stop
+"""
 
 import pandas as pd
 from multiprocessing import Pool

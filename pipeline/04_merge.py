@@ -1,5 +1,7 @@
-#!/usr/bin/env python3
-# Merge the APC/AVL file with the aggregated Orca file
+# pylint: disable=C0103
+"""
+Merge the APC/AVL file with the aggregated Orca file
+"""
 
 import pandas as pd
 from multiprocessing import Pool

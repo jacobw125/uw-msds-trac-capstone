@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+# pylint: disable=C0103
+"""
+Add docstring
+"""
+
 import pandas as pd
 import numpy as np
 from numpy.random import seed, random
