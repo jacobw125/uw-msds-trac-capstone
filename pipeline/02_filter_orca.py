@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
-
-# Filters and splits the APC file into multiple .tsv.gz files, one file per day in the
-# study period that we wish to preserve. Also nulls out some values that are suspected to be
-# outliers.
-
-# Kept 10,396,011 of 27,878,358 lines (37.290614%)
+# pylint: disable=C0103
+"""
+Filters and splits the APC file into multiple .tsv.gz files, one file per day in the
+study period that we wish to preserve. Also nulls out some values that are suspected to be
+outliers.
+"""
 
 import gzip
 import csv
