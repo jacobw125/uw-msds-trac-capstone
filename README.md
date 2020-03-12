@@ -30,18 +30,23 @@ Use the [User Guide](https://github.com/jacobw125/uw-msds-trac-capstone/blob/mas
 uw-msds-trac-capstone/
   |- data/
      |- predictions/
-	*Predictions from final neural network for time aggregates(15min, 30min, hr) on the combined (summer + winter) dataset.*
+	**Predictions from final neural network for
+	  time aggregates(15min, 30min, hr) on the 
+	  combined (summer + winter) dataset.**
 	|- model_final_nn/
 	   |- final_nn_[15min]_test.txt
 	   |- final_nn_[15min]_xval.txt
-	*Predictions from models(nn, clustered_svm, xgb), time aggregates (15min, 30min), and season(combined, summer, winter).*
+	**Predictions from models(nn, clustered_svm, xgb),
+	  time aggregates (15min, 30min), and season
+	  (combined, summer, winter).**
 	|- model_[nn]/
 	   |- [nn]_[15min]_[season]_test.txt
 	   |- [nn]_[15min]_[season]_xval.txt
      |- training_data/
 	|- combined_data/
 	   |- aggregates/
-	      *Training datasets for various time aggregation levels(15min, 30min, ampm, day, hr).*
+	      **Training datasets for various time aggregation
+	        levels(15min, 30min, ampm, day, hr).**
 	      |- [15min]/
 	         |- test.tsv.gz
                  |- train.tsv.gz
