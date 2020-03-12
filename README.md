@@ -1,10 +1,17 @@
+###### uw-msds-trac-capstone
 # Modeling King County Bus Ridership
-##### uw-msds-trac-capstone
 ![Performance](https://github.com/jacobw125/uw-msds-trac-capstone/blob/master/docs/Performance.PNG)
 
 ## Background
+Bus route planning and optimization is an integral part of city planning. Understanding bus ridership enables transit agencies to make planning decisions and better understand the impact of station closures, headway changes, and weather events. However, no model or data sources exist to measure total ridership across the King County Metro system. ORCA payment card transactions are available, but only measure riders who pay with ORCA. Automatic person counter (APC) measures all riders but is only present for ~60% of trips during a survey period of 3 months, twice a year. The goal of this project is to predict total ridership (APC) across route, direction, and time of day using ORCA transactions and route metadata.
 
+We use APC data from the King County Metro system to create a machine learning model that accurately estimates actual ridership using the incomplete ORCA transactional data, which can estimate total actual ridership across all routes, directions, and times of day, regardless of whether the bus was outfitted with automated person counting technology. 
 
+To do this we:
+1. Created a data processing pipeline that merges APC data, ORCA data, and route metadata to create training sets.
+2. Trained a shallow, wide neural network utilizing the sigmoid function in the first layer with a linear output neuron.
+
+For more information on the methodology and results, see [here](https://github.com/jacobw125/uw-msds-trac-capstone/blob/master/docs).
 
 ## Installation
 1. Clone the repo  
@@ -16,7 +23,7 @@
 ```pip install –r requirements.txt```  
 
 ## How to Use/Examples
-Use the [User Guide](https://github.com/jacobw125/uw-msds-trac-capstone/blob/master/examples/User_Guide.pdf) to get you started.
+Use the [User Guide](https://github.com/jacobw125/uw-msds-trac-capstone/blob/master/examples/User_Guide.pdf) to get started.
 
 ## Directory Structure
 ```
@@ -127,9 +134,9 @@ uw-msds-trac-capstone/
 The code in this repository is licensed under a [MIT](https://opensource.org/licenses/MIT) license.
 
 ## Acknowledgements
-This analysis was done for the University of Washington's Master of Data Science's Capstone.
-More information about the class can be found [here](https://www.washington.edu/datasciencemasters/capstone-projects/).
-
 - Mark Hallenbeck at TRAC for his time and subject expertise.
 - Dmitri Zyuzin for his help gathering the data for this project.
 - Megan Hazen for her guidance in this capstone project and expertise on neural networks.
+
+This analysis was done for the University of Washington's Master of Data Science's Capstone.
+More information about the class can be found [here](https://www.washington.edu/datasciencemasters/capstone-projects/).
