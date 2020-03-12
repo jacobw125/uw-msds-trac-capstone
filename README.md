@@ -1,7 +1,6 @@
 # Modeling King County Bus Ridership
-#### uw-msds-trac-capstone
-
-![Logo](https://github.com/jacobw125/uw-msds-trac-capstone/blob/master/docs/WeekdayPerformance.PNG)
+##### uw-msds-trac-capstone
+![Performance](https://github.com/jacobw125/uw-msds-trac-capstone/blob/master/docs/Performance.PNG)
 
 ## Background
 
