@@ -29,19 +29,23 @@ Use the [User Guide](https://github.com/jacobw125/uw-msds-trac-capstone/blob/mas
 ```
 uw-msds-trac-capstone/
   |- data/
-     |- predictions/ [NEEDS MORE]
+     |- predictions/
+	*Predictions from final neural network for time aggregates(15min, 30min, hr) on the combined (summer + winter) dataset.*
+	|- model_final_nn/
+	   |- final_nn_[15min]_test.txt
+	   |- final_nn_[15min]_xval.txt
+	*Predictions from models(nn, clustered_svm, xgb), time aggregates (15min, 30min), and season(combined, summer, winter).*
+	|- model_[nn]/
+	   |- [nn]_[15min]_[season]_test.txt
+	   |- [nn]_[15min]_[season]_xval.txt
      |- training_data/
 	|- combined_data/
 	   |- aggregates/
-	      |- 15min/
+	      *Training datasets for various time aggregation levels(15min, 30min, ampm, day, hr).*
+	      |- [15min]/
 	         |- test.tsv.gz
                  |- train.tsv.gz
-                 |- val.tsv.gz
-		[Remaining]	
-	      |- 30min/...
-              |- ampm/...
-	      |- day/...
-              |- hr/...
+                 |- val.tsv.gz	
 	|- summer_data
 	   |- aggregates/...
 	   |- boeing_field_2019.csv
@@ -51,8 +55,9 @@ uw-msds-trac-capstone/
      |- rte_clean.csv
   |- docs/
      |- Abstract [remaining]
-     |- Poster [remaining]
      |- Paper [remaining]
+     |- Performance.PNG
+     |- Poster [remaining]
   |- eda/
      |- reports_apc/
 	|- correlates/
@@ -62,7 +67,16 @@ uw-msds-trac-capstone/
 	|- unique_vals.tsv
      |- reports_orca/
 	|- correlates/
-	   |- [Remaining]
+	   |- device_location_id-VS-device_location_descr.tsv
+	   |- direction_id-VS-direction_descr.tsv
+	   |- mode_id-VS-mode_descr.tsv
+	   |- origin_location_id-VS-origin_location_descr.tsv
+	   |- product_id-VS-product_descr.tsv
+	   |- service_agency_id-VS-service_agency_name.tsv
+	   |- source_agency_id-VS-source_agency_name.tsv
+	   |- txn_passenger_type_id-VS-txn_passenger_type_descr.tsv
+	   |- txn_type_id-VS-txn_type_descr.tsv
+	   |- viaserviceareaid-VS-viaserviceareaname.tsv
 	|- numerics.tsv
 	|- unique_counts.tsv
 	|- unique_vals.tsv
@@ -88,7 +102,32 @@ uw-msds-trac-capstone/
      |- model_feature_explain/
 	|- contributions_by_feature.svg
 	|- describe_nn.ipynb
-     |- model_preformance/ [remaining]
+     |- model_preformance/
+	|- model_final_nn/
+	   |- final_nn_15min/
+	      Plots created by python notebook.
+	   |- final_nn_15min_no_rr/...
+	   |- final_nn_30min/...
+           |- final_nn_30min_no_rr/...
+	   |- final_nn_hr/...
+	   |- final_nn_hr_no_rr/...
+	Various models [nn, svm, xgb]
+	|- model_[nn]/
+	   |- [nn]_15min_combined/
+	      Plots created by python notebook.
+	   |- [nn]_15min_summer/...
+	   |- [nn]_15min_winter/...
+           |- [nn]_30min_combined/...
+	   |- [nn]_30min_summer/...
+	   |- [nn]_30min_winter/...
+	|- plots/
+	   Plots created by python notebook.
+	|- 01_reports_performance.py
+	|- 15m_test_group_perg.csv
+	|- batch_compare.tsv
+	|- compare_perf.ipynb
+	|- evaluate.sh
+	|- genBarPlots.py
      |- ridership_by_day/
 	|- plots/ 
 	   Plots created by python notebook.
