@@ -27,6 +27,7 @@ uw-msds-trac-capstone/
 	         |- test.tsv.gz
                  |- train.tsv.gz
                  |- val.tsv.gz
+		[Remaining]	
 	      |- 30min/...
               |- ampm/...
 	      |- day/...
@@ -39,23 +40,60 @@ uw-msds-trac-capstone/
 	   |- boeing_field_2019.csv
      |- rte_clean.csv
   |- docs/
-     |- Abstract
-     |- Poster
-     |- Paper
-  |- eda
-  |- evaluation
+     |- Abstract [remaining]
+     |- Poster [remaining]
+     |- Paper [remaining]
+  |- eda/
+     |- reports_apc/
+	|- correlates/
+	   |- stop_id-VS-stop_name.tsv
+	|- numerics.tsv
+	|- unique_counts.tsv
+	|- unique_vals.tsv
+     |- reports_orca/
+	|- correlates/
+	   |- [Remaining]
+	|- numerics.tsv
+	|- unique_counts.tsv
+	|- unique_vals.tsv
+     |- src/
+	|- agg_apc.py
+	|- agg_orca.py
+	|- figure_out_direction.py
+	|- filter_apc.py
+	|- filter_orca.py
+	|- generic_inspec.py
+	|- inspect_apc.py
+	|- inspect_orca.py
+	|- merge_apc_orca.py
+     |- winter_summer_EDA.ipynb
+  |- evaluation/
+     |- cluster_rte_frequency/
+	|- 00_gather_route_info.ipynb
+	|- rte_clusters.tsv
+     |- model_bias/
+	|- plots/
+	   Plots created by python notebook.
+	|- bias.ipynb
+     |- model_feature_explain/
+	|- contributions_by_feature.svg
+	|- describe_nn.ipynb
+     |- model_preformance/ [remaining]
+     |- ridership_by_day/
+	|- plots/ 
+	   Plots created by python notebook.
+	|- ridership_by_day_evaluation.ipynb
   |- examples/
-     |- User_Guide.pdf
+     |- User_Guide.pdf [remaining]
   |- models/
      |- final_nn/
-	Model components per time aggregation modeled [15m, 30m, hr]
+	Model components per time aggregation modeled [15m, 30m, hr].
 	|- [15m]_column_labels.pkl
 	|- [15m]_one_hot_encoder.pkl
 	|- [15m]_standard_scaler.pkl
 	|- model_[15m].json
 	|- model_[15m]_weights_train.h5
 	|- model_15m_weights_train_and_xval.h5
- scaler, model, and weights per 
      |- model_iterations/
 	|- clustered_linear.ipynb
         |- clustered_nn.ipynb
