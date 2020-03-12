@@ -1,10 +1,10 @@
 # pylint: disable=C0103
-""""
+'''
 Merges the aggregated APC/AVL file with the aggregated Orca file. Then merges with
 neighborhood data.
 
 Uncomment code at bottom to get trip roll-up data.
-"""
+'''
 
 from sys import argv
 from multiprocessing import Pool
@@ -39,13 +39,13 @@ DESIRED_COLUMN_ORDER = [c.APC_DATE, c.APC_SD, c.DAY_OF_WEEK, c.TRIP_ID, c.STOP_I
 SORT_BY = [c.TRIP_ID]
 
 def process_file(day):
-    """
+    '''
     Reads apc data day csv, deduplicates rows, adds features, and aggregates over trip, stop,
     and day. Saves the aggregated to dataframe.
 
     :params fname string:
     :returns dataframe:
-    """
+    '''
 
     # reads apc file
     print(f'Merging {day}')
@@ -154,12 +154,12 @@ if not IS_SUMMER:
 DATA.to_csv(c.MERGE_DIR + TAG + '/merged_stops.tsv.gz', sep='\t', index=False)
 
 
-# Roll-up, summing over all stops in the trip_id
-DATA.groupby([c.APC_DATE, c.TRIP_ID,
-              c.APC_DIRECTION, c.APC_RTE]).agg({c.DAY_OF_WEEK: 'first', c.APC_RR: 'first',
-                                                c.APC_ONS: 'sum', c.ORCA_TOTAL: 'sum',
-                                                c.ORCA_ADULT: 'sum', c.ORCA_DISABLED: 'sum',
-                                                c.ORCA_SENIOR: 'sum', c.ORCA_YOUTH: 'sum',
-                                                c.ORCA_LOWINCOME: 'sum', c.ORCA_UW: 'sum'}
-                                                ).to_csv(c.MERGE_DIR + TAG + \
-                                                '/trip_id_rollups.tsv.gz', sep='\t', index=True)
+## Roll-up, summing over all stops in the trip_id
+# DATA.groupby([c.APC_DATE, c.TRIP_ID,
+#               c.APC_DIRECTION, c.APC_RTE]).agg({c.DAY_OF_WEEK: 'first', c.APC_RR: 'first',
+#                                                 c.APC_ONS: 'sum', c.ORCA_TOTAL: 'sum',
+#                                                 c.ORCA_ADULT: 'sum', c.ORCA_DISABLED: 'sum',
+#                                                 c.ORCA_SENIOR: 'sum', c.ORCA_YOUTH: 'sum',
+#                                                 c.ORCA_LOWINCOME: 'sum', c.ORCA_UW: 'sum'}
+#                                                 ).to_csv(c.MERGE_DIR + TAG + \
+#                                                 '/trip_id_rollups.tsv.gz', sep='\t', index=True)

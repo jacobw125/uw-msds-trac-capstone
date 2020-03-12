@@ -1,11 +1,11 @@
 # pylint: disable=C0103
-"""
+'''
 Filters and splits the ORCA file into multiple .tsv.gz files, one file per day in the
 study period that we wish to preserve.
 
 Fall: Kept 9788082 of 27878358 lines (35.109966%)
 Summer: Kept 11018674 of 11025382 lines (99.939159%)
-"""
+'''
 
 import gzip
 import csv

@@ -1,25 +1,13 @@
-"""
+'''
 Contains contants used throughout pipeline
-"""
+'''
 
 AGG_DIR = 'aggregates/'
-AGG_COLUMNS = {
-    'day_of_week': 'first',
-    'is_ns': 'first',
-    'is_rapid': 'first',
-    'is_weekend': 'first',
-    'orca_total': 'sum',
-    'frac_disabled': 'mean',
-    'frac_youth': 'mean',
-    'frac_senior': 'mean',
-    'frac_li': 'mean',
-    'frac_uw': 'mean',
-    'ons': 'sum',
-    'region': 'first',
-    'start': 'first',
-    'end' : 'first',
-    'type': 'first' # **{col: 'mean' for col in WEATHER_COLS}
-}
+AGG_COLUMNS = {'day_of_week': 'first', 'is_ns': 'first', 'is_rapid': 'first',
+               'is_weekend': 'first', 'orca_total': 'sum', 'frac_disabled': 'mean',
+               'frac_youth': 'mean', 'frac_senior': 'mean', 'frac_li': 'mean',
+               'frac_uw': 'mean', 'ons': 'sum', 'region': 'first', 'start': 'first',
+               'end' : 'first', 'type': 'first'}
 AM = 'is_am'
 APC_COLUMNS = ['daycode', 'trip_id', 'pattern_id', 'pattern_quality', 'blk', 'rte', 'dir',
                'sch_st_min', 'opd_date', 'pattern_quality_1', 'vehicle_id', 'stop_id',

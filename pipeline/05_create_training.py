@@ -1,10 +1,9 @@
 # pylint: disable=C0103
-
-"""
+'''
 Create different levels of time aggregation (15min, 30min, 1hr, AM/PM, Day),
 grouping on when the trip starts. Makes train, test, val split for each time
 aggregation modeling sets.
-"""
+'''
 
 from sys import argv
 from os import makedirs
@@ -170,31 +169,31 @@ AGGR_DAY_15 = func.agg_data(DATA, [c.APC_DATE, c.TRIP_15,
                                    c.APC_RTE, c.APC_DIRECTION], AGG_TYPES)
 
 def train_test_split(dataset, prefix):
-    """
+    '''
     Randomly split the dataset 80%, 10%, 10% for train, test, and validation set,
     respectively. Save training set. Important to use same training sets when comparing
     models to limit noise caused by the data.
-    """
+    '''
     print('Performing train/test split for level: ' + prefix)
     seed(1337)
     is_train = (random(len(dataset)) < 0.8)
     is_xval = (~is_train) & (random(len(dataset)) < 0.5)  # half of the non training samples
+
+    data_train = dataset[is_train]
+    data_xval = dataset[is_xval]
+    data_test = dataset[~is_train & ~is_xval]
+
+    print(f'Train: {len(data_train)/len(dataset):%}')
+    print(f'Xval: {len(data_xval)/len(dataset):%}')
+    print(f'Test: {len(data_test)/len(dataset):%}')
     #
-    data_train = DATA[is_train]
-    data_xval = DATA[is_xval]
-    data_test = DATA[~is_train & ~is_xval]
-    #
-    print(f'Train: {len(data_train)/len(DATA):%}')
-    print(f'Xval: {len(data_xval)/len(DATA):%}')
-    print(f'Test: {len(data_test)/len(DATA):%}')
-    #
-    makedirs(f'{c.MERGE_DIR}/{c.AGG_DIR}/{prefix}', exist_ok=True)
-    print(' Saving data')
-    data_train.to_csv(f'{c.MERGE_DIR}/{TAG3}/{c.AGG_DIR}{prefix}/train.tsv.gz',
+    makedirs(f'{c.MERGE_DIR}{TAG3}/{c.AGG_DIR}/{prefix}', exist_ok=True)
+    print('Saving data')
+    data_train.to_csv(f'{c.MERGE_DIR}{TAG3}/{c.AGG_DIR}{prefix}/train.tsv.gz',
                       sep='\t', index=False, compression='gzip')
-    data_xval.to_csv(f'{c.MERGE_DIR}/{TAG3}/{c.AGG_DIR}/{prefix}/xval.tsv.gz',
+    data_xval.to_csv(f'{c.MERGE_DIR}{TAG3}/{c.AGG_DIR}/{prefix}/xval.tsv.gz',
                      sep='\t', index=False, compression='gzip')
-    data_test.to_csv(f'{c.MERGE_DIR}/{TAG3}/{c.AGG_DIR}/{prefix}/test.tsv.gz',
+    data_test.to_csv(f'{c.MERGE_DIR}{TAG3}/{c.AGG_DIR}/{prefix}/test.tsv.gz',
                      sep='\t', index=False, compression='gzip')
     #
     return data_train, data_xval, data_test

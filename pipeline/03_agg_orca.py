@@ -1,12 +1,12 @@
 # pylint: disable=C0103,C0121
-"""
+'''
 Remember, each line in the APC file represents one stop. But each line in the
 Orca file represents a transaction! This script 'rolls up' the Orca file so
 that each line represents a stop.
 
 Fall: Kept 9788082 of 27878358 lines (35.109966%)
 Summer: Kept 11018674 of 11025382 lines (99.939159%)
-"""
+'''
 
 from sys import argv
 from os import makedirs
@@ -32,12 +32,12 @@ FILES = [f'{c.ORCA_DIR}/{day}.tsv.gz' for day in DAYS_TO_KEEP]
 makedirs(c.ORCA_DIR_AGG, exist_ok=True)
 
 def process_file(fname):
-    """
+    '''
     Reads orca data day csv, deduplicates rows, adds features, and aggregates over trip, stop,
     and day. Saves the aggregated data to another file.
 
     :params fname string:
-    """
+    '''
 
     # reads orca file
     print(f'Aggregating {fname}')

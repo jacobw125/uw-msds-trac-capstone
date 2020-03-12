@@ -1,12 +1,12 @@
 # pylint: disable=C0103
-"""
+'''
 Filters and splits the APC file into multiple .tsv.gz files, one file per day in the
 study period that we wish to preserve. Also nulls out some values that are suspected to be
 outliers.
 
 Fall: Kept 11737145 of 20535948 lines (57.154143%)
 Summer: Kept 8368494 of 12201946 lines (68.583274%)
-"""
+'''
 
 import gzip
 import csv
