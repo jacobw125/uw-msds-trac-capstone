@@ -102,7 +102,7 @@ uw-msds-trac-capstone/
 	|- rte_clusters.tsv
      |- model_bias/
 	|- plots/
-	   Plots created by python notebook.
+	   **Plots created by python notebook.**
 	|- bias.ipynb
      |- model_feature_explain/
 	|- contributions_by_feature.svg
@@ -110,7 +110,7 @@ uw-msds-trac-capstone/
      |- model_preformance/
 	|- model_final_nn/
 	   |- final_nn_15min/
-	      Plots created by python notebook.
+	      **Plots created by python notebook.**
 	   |- final_nn_15min_no_rr/...
 	   |- final_nn_30min/...
            |- final_nn_30min_no_rr/...
@@ -119,14 +119,14 @@ uw-msds-trac-capstone/
 	Various models [nn, svm, xgb]
 	|- model_[nn]/
 	   |- [nn]_15min_combined/
-	      Plots created by python notebook.
+	      **Plots created by python notebook.**
 	   |- [nn]_15min_summer/...
 	   |- [nn]_15min_winter/...
            |- [nn]_30min_combined/...
 	   |- [nn]_30min_summer/...
 	   |- [nn]_30min_winter/...
 	|- plots/
-	   Plots created by python notebook.
+	   **Plots created by python notebook.**
 	|- 01_reports_performance.py
 	|- 15m_test_group_perg.csv
 	|- batch_compare.tsv
@@ -135,13 +135,13 @@ uw-msds-trac-capstone/
 	|- genBarPlots.py
      |- ridership_by_day/
 	|- plots/ 
-	   Plots created by python notebook.
+	   **Plots created by python notebook.**
 	|- ridership_by_day_evaluation.ipynb
   |- examples/
      |- User_Guide.pdf [remaining]
   |- models/
      |- final_nn/
-	Model components per time aggregation modeled [15m, 30m, hr].
+	**Model components per time aggregation modeled [15m, 30m, hr].**
 	|- [15m]_column_labels.pkl
 	|- [15m]_one_hot_encoder.pkl
 	|- [15m]_standard_scaler.pkl
