@@ -1,58 +1,80 @@
-# pylint: disable=C0103
+# pylint: disable=C0103,C0121
 """
-Remember, each line in the APC file represents one stop. But each line in the Orca file represents a transaction!
-This script 'rolls up' the Orca file so that each line represents a stop
+Remember, each line in the APC file represents one stop. But each line in the
+Orca file represents a transaction! This script 'rolls up' the Orca file so
+that each line represents a stop.
+
+Fall: Kept 9788082 of 27878358 lines (35.109966%)
+Summer: Kept 11018674 of 11025382 lines (99.939159%)
 """
 
-import pandas as pd
-from multiprocessing import Pool
-from os.path import basename
+from sys import argv
 from os import makedirs
+from os.path import basename
+from multiprocessing import Pool
+import pandas as pd
 
-IS_SUMMER=False
+import constants as c
 
-days_to_keep = [f'2019-01-{day:02d}' for day in range(7,32)] +  \
-               [f'2019-02-{day:02d}' for day in range(1,3)] +  \
-               [f'2019-02-{day:02d}' for day in range(13, 29)] + \
-               [f'2019-03-{day:02d}' for day in range(1, 4)]
+# checks for input argument
+if len(argv) < 2:
+    raise ValueError('Missing input parameter. Needs if summer data (True/False).')
+
+# define seasonal constants
+IS_SUMMER = argv[1] == 'True'
+
+DAYS_TO_KEEP = c.WINTER_DAYS
 
 if IS_SUMMER:
-    days_to_keep = [f'2019-07-{day:02d}' for day in range(1, 32)]  + \
-                   [f'2019-08-{day:02d}' for day in range(1, 32)]
+    DAYS_TO_KEEP = c.SUMMER_DAYS
 
-files = [f'data/orca/{day}.tsv.gz' for day in days_to_keep]
-makedirs('data/orca_agg', exist_ok=True)
+FILES = [f'{c.ORCA_DIR}/{day}.tsv.gz' for day in DAYS_TO_KEEP]
+makedirs(c.ORCA_DIR_AGG, exist_ok=True)
 
 def process_file(fname):
-    print(f"Aggregating {fname}")
-    data = pd.read_csv(fname, sep='\t', dtype={'trip_id': 'O', 'stop_id': 'O', 'route_number': 'O'}, low_memory=False)
+    """
+    Reads orca data day csv, deduplicates rows, adds features, and aggregates over trip, stop,
+    and day. Saves the aggregated data to another file.
+
+    :params fname string:
+    """
+
+    # reads orca file
+    print(f'Aggregating {fname}')
+    data = pd.read_csv(fname, sep='\t',
+                       dtype={c.TRIP_ID: 'O', c.STOP_ID: 'O', c.ORCA_RTE: 'O'},
+                       low_memory=False)
+
+    # finds duplicates and removes them if they exist
     n_dups = sum(data.duplicated())
-
     if n_dups > 0:
-        print(f"Found {n_dups} Orca duplicates on day {fname}")
+        print(f'Found {n_dups} Orca duplicates on day {fname}')
         data = data.drop_duplicates()
-    data = data[(data['trip_id'].isna() == False) & (data['stop_id'].isna() == False)]
-    data = data[['business_date', 'trip_id', 'stop_id', 'txn_dtm_pacific', 'biz_txn_diff',
-    'txn_passenger_type_descr', 'institution_name', 'passenger_count']]
-    data['orca_total'] = data['passenger_count']
-    data['orca_adult'] = data['passenger_count'].where(data['txn_passenger_type_descr'] == 'Adult', 0)
-    data['orca_disabled'] = data['passenger_count'].where(data['txn_passenger_type_descr'] == 'Disabled', 0)
-    data['orca_senior'] = data['passenger_count'].where(data['txn_passenger_type_descr'] == 'Senior', 0)
-    data['orca_youth'] = data['passenger_count'].where(data['txn_passenger_type_descr'] == 'Youth', 0)
-    data['orca_lowincome'] = data['passenger_count'].where(data['txn_passenger_type_descr'] == 'Low Income', 0)
-    data['orca_uw'] = data['passenger_count'].where(data['institution_name'] == 'University of Washington', 0)
-    data.drop(['txn_passenger_type_descr', 'institution_name', 'passenger_count'], axis = 1)
-    data.groupby(['business_date', 'trip_id', 'stop_id']).agg({
-        'txn_dtm_pacific': 'first',
-        'biz_txn_diff': 'first',
-        'orca_total': 'sum',
-        'orca_adult': 'sum',
-        'orca_disabled': 'sum',
-        'orca_senior': 'sum',
-        'orca_youth': 'sum',
-        'orca_lowincome': 'sum',
-        'orca_uw': 'sum'
-    }).to_csv(f"data/orca_agg/{basename(fname)}", index=True, sep='\t')
 
-with Pool(1) as p:
-    p.map(process_file, files)
+    # filters out incomplete data, where trip or stop is missing
+    data = data[(data[c.TRIP_ID].isna() == False) & (data[c.STOP_ID].isna() == False)]
+
+    # adds demographic features
+    data = data[[c.ORCA_DATE, c.TRIP_ID, c.STOP_ID, c.ORCA_TDP,
+                 c.ORCA_BTD, c.ORCA_TPTD, c.ORCA_IN, c.ORCA_PC]]
+    data[c.ORCA_TOTAL] = data[c.ORCA_PC]
+    data[c.ORCA_ADULT] = data[c.ORCA_PC].where(data[c.ORCA_TPTD] == c.TXN_ID_TO_DESC['1'], 0)
+    data[c.ORCA_YOUTH] = data[c.ORCA_PC].where(data[c.ORCA_TPTD] == c.TXN_ID_TO_DESC['2'], 0)
+    data[c.ORCA_SENIOR] = data[c.ORCA_PC].where(data[c.ORCA_TPTD] == c.TXN_ID_TO_DESC['3'], 0)
+    data[c.ORCA_DISABLED] = data[c.ORCA_PC].where(data[c.ORCA_TPTD] == c.TXN_ID_TO_DESC['4'], 0)
+    data[c.ORCA_LOWINCOME] = data[c.ORCA_PC].where(data[c.ORCA_TPTD] == c.TXN_ID_TO_DESC['5'], 0)
+    data[c.ORCA_UW] = data[c.ORCA_PC].where(data[c.ORCA_IN] == 'University of Washington', 0)
+    data.drop([c.ORCA_TPTD, c.ORCA_IN, c.ORCA_PC], axis=1)
+
+    # aggregates counts over trip, stop, and day and saves to file
+    data.groupby([c.ORCA_DATE, c.TRIP_ID,
+                  c.STOP_ID]).agg({c.ORCA_TDP: 'first', c.ORCA_BTD: 'first',
+                                   c.ORCA_TOTAL: 'sum', c.ORCA_ADULT: 'sum',
+                                   c.ORCA_DISABLED: 'sum', c.ORCA_SENIOR: 'sum',
+                                   c.ORCA_YOUTH: 'sum', c.ORCA_LOWINCOME: 'sum',
+                                   c.ORCA_UW: 'sum'}).to_csv( \
+                                   f'{c.ORCA_DIR_AGG}/{basename(fname)}', index=True, sep='\t')
+
+# parallelize file processing
+with Pool(c.POOL) as p:
+    p.map(process_file, FILES)

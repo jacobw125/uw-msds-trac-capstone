@@ -1,194 +1,207 @@
 # pylint: disable=C0103
+
 """
-Add docstring
+Create different levels of time aggregation (15min, 30min, 1hr, AM/PM, Day),
+grouping on when the trip starts. Makes train, test, val split for each time
+aggregation modeling sets.
 """
 
-import pandas as pd
-import numpy as np
-from numpy.random import seed, random
-from datetime import datetime
+from sys import argv
 from os import makedirs
+from datetime import datetime
+import pandas as pd
+from numpy.random import seed, random
 
-# Create features
-print("Loading merged dataset")
-data = pd.read_csv("data/merged_stops.tsv.gz", sep="\t")
+import constants as c
+import functions as func
 
-both = False
-if both:
-    data_1 = pd.read_csv("data/merged_stops_1.tsv.gz", sep="\t")
-    data.append(data_1)
+# checks for input argument
+if len(argv) < 2:
+    raise ValueError('Missing input parameter. Needs if Summer, \
+                     Winter, or Both data (S/W/B).')
 
-def inf_or_nan(x):
-    return np.isnan(x) | np.isinf(x)
+# define seasonal constants
+SEASON = argv[1]
 
-print("Creating additional features")
-data['orca_apc_ratio'] = (data['orca_total'] / data['ons']).where(lambda x: ~inf_or_nan(x), 0)
-data['frac_disabled'] = (data['orca_disabled'] / data['orca_total']).where(lambda x: ~inf_or_nan(x), 0)
-data['frac_youth'] = (data['orca_youth'] / data['orca_total']).where(lambda x: ~inf_or_nan(x), 0)
-data['frac_senior'] = (data['orca_senior'] / data['orca_total']).where(lambda x: ~inf_or_nan(x), 0)
-data['frac_li'] = (data['orca_lowincome'] / data['orca_total']).where(lambda x: ~inf_or_nan(x), 0)
-data['frac_uw'] = (data['orca_uw'] / data['orca_total']).where(lambda x: ~inf_or_nan(x), 0)
-data['is_ns'] = data.dir.isin(['N', 'S']) * 1.0
-#data['is_inbound'] = (data.direction_descr == "Inbd") * 1.0
-data['is_rapid'] = (data.is_rapidride) * 1.0
-data['is_weekend'] = (data['day_of_week'] >= 5)*1.0  # 5 and 6 are Sat/Sun in python
-data['parsed_dt'] = data['apc_stop_dt'].apply(lambda dt: datetime.strptime(dt, "%Y-%m-%d %H:%M:%S"))
-data['is_am'] = data['parsed_dt'].apply(lambda dt: dt.hour < 12)
-data['hour_of_day'] = data['parsed_dt'].apply(lambda dt: dt.hour)
-data['hour_of_day_text'] = data['parsed_dt'].apply(lambda dt: dt.strftime("%H"))
-data['hr_quadrant'] = data['parsed_dt'].apply(lambda dt: int(dt.minute / 15))
+if SEASON == 'S':
+    TAG1 = 'summer_data'
+    TAG2 = TAG1
+    TAG3 = TAG1
+elif SEASON == 'W':
+    TAG1 = 'winter_data'
+    TAG2 = TAG1
+    TAG3 = TAG1
+else:
+    TAG1 = 'summer_data'
+    TAG2 = 'winter_data'
+    TAG3 = 'combined_data'
 
-print("Figuring out when each trip started")
-trip_starts = data.groupby(['opd_date', 'trip_id'])['parsed_dt'].min().reset_index().rename(columns={'parsed_dt': 'trip_start_dt'})
-trip_starts.head()
+# load merged ORCA/APC file
+print('Loading merged dataset')
+DATA = pd.read_csv(c.MERGE_DIR + TAG1 + '/merged_stops.tsv.gz', sep='\t')
 
-valid_trips = data[['opd_date', 'trip_id', 'ons', 'orca_total']].groupby(['opd_date', 'trip_id']).sum().reset_index()
-valid_trips = valid_trips[(valid_trips['ons'] >= 0) & (valid_trips['orca_total'] <= valid_trips['ons'])]
-print(valid_trips.shape[0], data[['ons', 'orca_total']].sum(), valid_trips[['ons', 'orca_total']].sum())
+if SEASON == 'B':
+    DATA.append(pd.read_csv(c.MERGE_DIR + TAG2 + '/merged_stops.tsv.gz', sep='\t'))
 
-data = pd.merge(
-    data,
-    trip_starts,
-    on=['opd_date', 'trip_id'],
+# create additional features
+print('Creating additional features')
+DATA[c.ORCA_APC_RATIO] = (DATA[c.ORCA_TOTAL] / \
+                          DATA[c.APC_ONS]).where(lambda x: ~func.inf_or_nan(x), 0)
+DATA[c.ORCA_DISABLED_FRAC] = (DATA[c.ORCA_DISABLED] / \
+                         DATA[c.ORCA_TOTAL]).where(lambda x: ~func.inf_or_nan(x), 0)
+DATA[c.ORCA_YOUTH_FRAC] = (DATA[c.ORCA_YOUTH] / \
+                      DATA[c.ORCA_TOTAL]).where(lambda x: ~func.inf_or_nan(x), 0)
+DATA[c.ORCA_SENIOR_FRAC] = (DATA[c.ORCA_SENIOR] / \
+                       DATA[c.ORCA_TOTAL]).where(lambda x: ~func.inf_or_nan(x), 0)
+DATA[c.ORCA_LOWINCOME_FRAC] = (DATA[c.ORCA_LOWINCOME] / \
+                   DATA[c.ORCA_TOTAL]).where(lambda x: ~func.inf_or_nan(x), 0)
+DATA[c.ORCA_UW_FRAC] = (DATA[c.ORCA_UW] / \
+                   DATA[c.ORCA_TOTAL]).where(lambda x: ~func.inf_or_nan(x), 0)
+DATA[c.NS] = DATA.dir.isin(['N', 'S']) * 1.0
+DATA[c.RR] = (DATA.is_rapidride) * 1.0
+DATA[c.WKD] = (DATA[c.DAY_OF_WEEK] >= 5)*1.0  # 5 and 6 are Sat/Sun in python
+DATA[c.PARSED_DT] = DATA[c.APC_SD].apply(lambda dt: datetime.strptime(dt, '%Y-%m-%d %H:%M:%S'))
+DATA[c.AM] = DATA[c.PARSED_DT].apply(lambda dt: dt.hour < 12)
+DATA[c.HD] = DATA[c.PARSED_DT].apply(lambda dt: dt.hour)
+DATA[c.HDT] = DATA[c.PARSED_DT].apply(lambda dt: dt.strftime('%H'))
+DATA[c.HQ] = DATA[c.PARSED_DT].apply(lambda dt: int(dt.minute / 15))
+
+# find start of trip
+print('Figuring out when each trip started')
+TRIP_STARTS = DATA.groupby([c.APC_DATE, c.TRIP_ID])[c.PARSED_DT].min().reset_index()
+TRIP_STARTS = TRIP_STARTS.rename(columns={c.PARSED_DT: 'trip_start_dt'})
+TRIP_STARTS.head()
+
+# merge start of trip to data
+DATA = pd.merge(
+    DATA,
+    TRIP_STARTS,
+    on=[c.APC_DATE, c.TRIP_ID],
     how='left'
 )
 
-data = pd.merge(
-    data,
-    valid_trips,
-    on = ['opd_date', 'trip_id'],
-    suffixes = ('_x', '_y'),
-    how = 'inner'
+# find valid trip, where APC >= 0 and APC >= ORCA
+VALID_TRIPS = DATA[[c.APC_DATE, c.TRIP_ID,
+                    c.APC_ONS, c.ORCA_TOTAL]].groupby([c.APC_DATE, c.TRIP_ID]).sum().reset_index()
+VALID_TRIPS = VALID_TRIPS[(VALID_TRIPS[c.APC_ONS] >= 0) & \
+                          (VALID_TRIPS[c.ORCA_TOTAL] <= VALID_TRIPS[c.APC_ONS])]
+print(VALID_TRIPS.shape[0], DATA[[c.APC_ONS, c.ORCA_TOTAL]].sum(),
+      VALID_TRIPS[[c.APC_ONS, c.ORCA_TOTAL]].sum())
+
+DATA = pd.merge(
+    DATA,
+    VALID_TRIPS,
+    on=[c.APC_DATE, c.TRIP_ID],
+    suffixes=('_x', '_y'),
+    how='inner'
 )
 
-print(data.columns)
+print(DATA.columns)
+print(DATA.shape[0], DATA[['ons_x', 'orca_total_x']].sum(),
+      VALID_TRIPS[[c.APC_ONS, c.ORCA_TOTAL]].sum())
+DATA = DATA.rename(columns={'ons_x': c.APC_ONS, 'orca_total_x' : c.ORCA_TOTAL})
+assert not DATA.trip_start_dt.isnull().any(), 'All trip_start_dt should be non-null'
+AGG_TYPES = c.AGG_COLUMNS
 
-print(data.shape[0], data[['ons_x', 'orca_total_x']].sum(), valid_trips[['ons', 'orca_total']].sum())
-data = data.rename(columns={'ons_x': 'ons', 'orca_total_x' : 'orca_total'})
-assert not data.trip_start_dt.isnull().any(), "All trip_start_dt should be non-null"
-
-# Add weather data
-# print("Adding weather data")
-# weather = pd.read_csv("data/boeing_field_2019.csv")
-# weather = weather[weather['REPORT_TYPE'] == 'FM-15']
-# weather['dt'] = weather['DATE'].apply(lambda dt: datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S"))
-# weather['date_part'] = weather['dt'].apply(lambda dt: dt.strftime("%Y-%m-%d"))
-# weather['hour_part'] = weather['dt'].apply(lambda dt: dt.strftime("%H"))
+## Add weather data
+# print('Adding weather data')
+# WEATHER = pd.read_csv(c.MERGE_DIR + TAG1 + '/' + c.WEATHER_FILE)
+# WEATHER = WEATHER[WEATHER['REPORT_TYPE'] == 'FM-15']
+# WEATHER['dt'] = WEATHER['DATE'].apply(lambda dt: datetime.strptime(dt, '%Y-%m-%dT%H:%M:%S'))
+# WEATHER['date_part'] = WEATHER['dt'].apply(lambda dt: dt.strftime('%Y-%m-%d'))
+# WEATHER['hour_part'] = WEATHER['dt'].apply(lambda dt: dt.strftime('%H'))
 #
-# WEATHER_COLS = ['HourlyDryBulbTemperature', 'HourlyPrecipitation', 'HourlyRelativeHumidity', 'HourlySeaLevelPressure', 'HourlyWindSpeed']
-# weather = weather[['date_part', 'hour_part'] + WEATHER_COLS]
+# WEATHER_COLS = ['HourlyDryBulbTemperature', 'HourlyPrecipitation',
+#                 'HourlyRelativeHumidity', 'HourlySeaLevelPressure', 'HourlyWindSpeed']
+# WEATHER = WEATHER[['date_part', 'hour_part'] + WEATHER_COLS]
 #
-# def remove_t_and_s(x):
-#     if (type(x) == type(0.1)):
-#         return x
-#     if x.endswith('s'):
-#         x = x[:-1]
-#     if x in ('T', '*'):
-#         return np.nan
-#     return float(x)
-#
-# weather['HourlyDryBulbTemperature'] = weather.HourlyDryBulbTemperature.apply(remove_t_and_s)
-# weather['HourlyPrecipitation'] = weather.HourlyPrecipitation.apply(remove_t_and_s)
-# weather['HourlyRelativeHumidity'] = weather.HourlyRelativeHumidity.apply(remove_t_and_s)
-# weather['HourlySeaLevelPressure'] = weather.HourlySeaLevelPressure.apply(remove_t_and_s)
-# weather['HourlyWindSpeed'] = weather.HourlyWindSpeed.apply(remove_t_and_s)
-
-# def mean_inpute(col):
-#     return col.where(~pd.isnull(col), col.mean())
+# WEATHER['HourlyDryBulbTemperature'] = WEATHER.HourlyDryBulbTemperature.apply(func.remove_t_and_s)
+# WEATHER['HourlyPrecipitation'] = WEATHER.HourlyPrecipitation.apply(func.remove_t_and_s)
+# WEATHER['HourlyRelativeHumidity'] = WEATHER.HourlyRelativeHumidity.apply(func.remove_t_and_s)
+# WEATHER['HourlySeaLevelPressure'] = WEATHER.HourlySeaLevelPressure.apply(func.remove_t_and_s)
+# WEATHER['HourlyWindSpeed'] = WEATHER.HourlyWindSpeed.apply(func.remove_t_and_s)
 #
 # # mean inpute missing weather values, except precip which is assumed to be 0 when NA
-# weather['HourlyPrecipitation'] = weather['HourlyPrecipitation'].fillna(0.)
-# weather['HourlyRelativeHumidity'] = mean_inpute(weather['HourlyRelativeHumidity'])
-# weather['HourlySeaLevelPressure'] = mean_inpute(weather['HourlySeaLevelPressure'])
-# weather['HourlyWindSpeed'] = mean_inpute(weather['HourlyWindSpeed'])
+# WEATHER['HourlyPrecipitation'] = WEATHER['HourlyPrecipitation'].fillna(0.)
+# WEATHER['HourlyRelativeHumidity'] = func.mean_input(WEATHER['HourlyRelativeHumidity'])
+# WEATHER['HourlySeaLevelPressure'] = func.mean_input(WEATHER['HourlySeaLevelPressure'])
+# WEATHER['HourlyWindSpeed'] = func.mean_input(WEATHER['HourlyWindSpeed'])
+#
+# # In case I need to re-merge weather, here's how to drop those columns
+# DATA.drop(columns=['HourlyDryBulbTemperature', 'HourlyPrecipitation', 'HourlyRelativeHumidity',
+#                    'HourlySeaLevelPressure', 'HourlyWindSpeed',], inplace=True)
+# DATA = pd.merge(DATA, WEATHER, how='left', left_on=[c.APC_DATE, c.HDT],
+#                 right_on=['date_part', 'hour_part'])
+# for col in WEATHER_COLS:
+#     AGG_TYPES.add('col', 'mean')
 
-# In case I need to re-merge weather, here's how to drop those columns
-# data.drop(columns=[
-#     'HourlyDryBulbTemperature',
-#     'HourlyPrecipitation',
-#     'HourlyRelativeHumidity',
-#     'HourlySeaLevelPressure',
-#     'HourlyWindSpeed',
-# ], inplace=True)
-# data = pd.merge(data, weather, how="left", left_on=['opd_date', 'hour_of_day_text'], right_on=['date_part', 'hour_part'])
-
-X_COLUMNS = {
-    'day_of_week': 'first',
-    'is_ns': 'first',
-    # 'is_inbound': 'first',
-    'is_rapid': 'first',
-    'is_weekend': 'first',
-    'orca_total': 'sum',
-    # 'orca_apc_ratio': 'mean',
-    'frac_disabled': 'mean',
-    'frac_youth': 'mean',
-    'frac_senior': 'mean',
-    'frac_li': 'mean',
-    'frac_uw': 'mean',
-    'ons': 'sum',
-    'region': 'first',
-    'start': 'first',
-    'end' : 'first',
-    'type': 'first'
-    # **{col: 'mean' for col in WEATHER_COLS}
-}
-
-print("Creating time-aggregate columns")
+print('Creating time-aggregate columns')
 # Create time-level aggregates
-data['trip_start_hr'] = data['trip_start_dt'].apply(lambda dt: dt.strftime("%H"))
-data['trip_start_is_am'] = data['trip_start_dt'].apply(lambda dt: 'am' if dt.hour < 12 else 'pm')
-data['trip_start_hr_30'] = data['trip_start_dt'].apply(lambda dt: dt.strftime("%H") + '_' + str(int(dt.minute/30)*30))
-data['trip_start_hr_15'] = data['trip_start_dt'].apply(lambda dt: dt.strftime("%H") + '_' + str(int(dt.minute/15)*15))
+DATA[c.TRIP_HR] = DATA[c.ORCA_TSD].apply(lambda dt: dt.strftime('%H'))
+DATA[c.TRIP_AM] = DATA[c.ORCA_TSD].apply(lambda dt: 'am' if dt.hour < 12 else 'pm')
+DATA[c.TRIP_30] = DATA[c.ORCA_TSD].apply(lambda dt: dt.strftime('%H') + \
+                                            '_' + str(int(dt.minute/30)*30))
+DATA[c.TRIP_15] = DATA[c.ORCA_TSD].apply(lambda dt: dt.strftime('%H') + \
+                                            '_' + str(int(dt.minute/15)*15))
 
-def agg_data(agg_by):
-    return data.groupby(agg_by).agg(X_COLUMNS).reset_index().sort_values(agg_by)
+print('Performing aggregation (day)')
 
-print("Performing aggregation (day)")
 # Group by day, rte/dir
-aggr_day = agg_data(['opd_date', 'rte', 'dir'])
+AGGR_DAY = func.agg_data(DATA, [c.APC_DATE, c.APC_RTE, c.APC_DIRECTION], AGG_TYPES)
 
 # Group by day, AM/PM, rte/dir
-print("Performing aggregation (am/pm)")
-aggr_day_ampm = agg_data(['opd_date', 'trip_start_is_am', 'rte', 'dir'])
+print('Performing aggregation (am/pm)')
+AGGR_DAY_AMPM = func.agg_data(DATA, [c.APC_DATE, c.TRIP_AM,
+                                     c.APC_RTE, c.APC_DIRECTION], AGG_TYPES)
 
 # Group by day, hour of day, rte/dir
-print("Performing aggregation (hour)")
-aggr_day_hr = agg_data(['opd_date', 'trip_start_hr', 'rte', 'dir'])
+print('Performing aggregation (hour)')
+AGGR_DAY_HR = func.agg_data(DATA, [c.APC_DATE, c.TRIP_HR,
+                                   c.APC_RTE, c.APC_DIRECTION], AGG_TYPES)
 
 # Group by day, hour of day, half hour, rte/dir
-print("Performing aggregation (half hour)")
-aggr_day_30 = agg_data(['opd_date', 'trip_start_hr_30', 'rte', 'dir'])
+print('Performing aggregation (half hour)')
+AGGR_DAY_30 = func.agg_data(DATA, [c.APC_DATE, c.TRIP_30,
+                                   c.APC_RTE, c.APC_DIRECTION], AGG_TYPES)
 
 # Group by day, hour of day, hour quadrant, rte/dir
-print("Performing aggregation (15-minute)")
-aggr_day_15 = agg_data(['opd_date', 'trip_start_hr_15', 'rte', 'dir'])
+print('Performing aggregation (15-minute)')
+AGGR_DAY_15 = func.agg_data(DATA, [c.APC_DATE, c.TRIP_15,
+                                   c.APC_RTE, c.APC_DIRECTION], AGG_TYPES)
 
-
-def train_test_split(data, prefix):
-    print("Performing train/test split for level: " + prefix)
+def train_test_split(dataset, prefix):
+    """
+    Randomly split the dataset 80%, 10%, 10% for train, test, and validation set,
+    respectively. Save training set. Important to use same training sets when comparing
+    models to limit noise caused by the data.
+    """
+    print('Performing train/test split for level: ' + prefix)
     seed(1337)
-    is_train = (random(len(data)) < 0.8)
-    is_xval = (~is_train) & (random(len(data)) < 0.5)  # half of the non training samples
+    is_train = (random(len(dataset)) < 0.8)
+    is_xval = (~is_train) & (random(len(dataset)) < 0.5)  # half of the non training samples
     #
-    data_train = data[is_train]
-    data_xval = data[is_xval]
-    data_test = data[~is_train & ~is_xval]
+    data_train = DATA[is_train]
+    data_xval = DATA[is_xval]
+    data_test = DATA[~is_train & ~is_xval]
     #
-    print(f"Train: {len(data_train)/len(data):%}")
-    print(f"Xval: {len(data_xval)/len(data):%}")
-    print(f"Test: {len(data_test)/len(data):%}")
+    print(f'Train: {len(data_train)/len(DATA):%}')
+    print(f'Xval: {len(data_xval)/len(DATA):%}')
+    print(f'Test: {len(data_test)/len(DATA):%}')
     #
-    makedirs(f"data/aggregates/{prefix}", exist_ok=True)
-    print(" Saving data")
-    data_train.to_csv(f"data/aggregates/{prefix}/train.tsv.gz", sep='\t', index=False, compression='gzip')
-    data_xval.to_csv(f"data/aggregates/{prefix}/xval.tsv.gz", sep='\t', index=False, compression='gzip')
-    data_test.to_csv(f"data/aggregates/{prefix}/test.tsv.gz", sep='\t', index=False, compression='gzip')
+    makedirs(f'{c.MERGE_DIR}/{c.AGG_DIR}/{prefix}', exist_ok=True)
+    print(' Saving data')
+    data_train.to_csv(f'{c.MERGE_DIR}/{TAG3}/{c.AGG_DIR}{prefix}/train.tsv.gz',
+                      sep='\t', index=False, compression='gzip')
+    data_xval.to_csv(f'{c.MERGE_DIR}/{TAG3}/{c.AGG_DIR}/{prefix}/xval.tsv.gz',
+                     sep='\t', index=False, compression='gzip')
+    data_test.to_csv(f'{c.MERGE_DIR}/{TAG3}/{c.AGG_DIR}/{prefix}/test.tsv.gz',
+                     sep='\t', index=False, compression='gzip')
     #
     return data_train, data_xval, data_test
 
-print("Performing train/test split")
-train, xval, test = train_test_split(aggr_day, "day")
-train, xval, test = train_test_split(aggr_day_ampm, "ampm")
-train, xval, test = train_test_split(aggr_day_hr, "hr")
-train, xval, test = train_test_split(aggr_day_30, "30min")
-train, xval, test = train_test_split(aggr_day_15, "15min")
+print('Performing train/test split')
+TRAIN, XVAL, TEST = train_test_split(AGGR_DAY, 'day')
+TRAIN, XVAL, TEST = train_test_split(AGGR_DAY_AMPM, 'ampm')
+TRAIN, XVAL, TEST = train_test_split(AGGR_DAY_HR, 'hr')
+TRAIN, XVAL, TEST = train_test_split(AGGR_DAY_30, '30min')
+TRAIN, XVAL, TEST = train_test_split(AGGR_DAY_15, '15min')

@@ -32,23 +32,24 @@ if IS_SUMMER:
 
 COLS_TO_KEEP = c.APC_COLUMNS
 
-# print status update and make directory for date files.
-print(f'Processing file {argv[1]} into data/apc/*.tsv.gz')
-makedirs('data/apc', exist_ok=True)
-
 # define additional freatures
 COLS_TO_GENERATE = {
     # Monday is 0, Sunday is 6
-    'day_of_week': lambda row: \
-                   str(datetime.strptime(row['opd_date'], '%Y-%m-%d').weekday()),
-    'is_rapidride': lambda row: func.is_rapidride(row['rte'])
+    c.DAY_OF_WEEK: lambda row: \
+                   str(datetime.strptime(row[c.APC_DATE], '%Y-%m-%d').weekday()),
+    c.APC_RR: lambda row: func.is_rapidride(row[c.APC_RTE])
 }
+
 COLS_IN_OUTFILE = list(set(COLS_TO_KEEP + list(COLS_TO_GENERATE.keys())))
+
+# print status update and make directory for date files
+print(f'Processing file {argv[1]} into {c.APC_DIR}/*.tsv.gz')
+makedirs(c.APC_DIR, exist_ok=True)
 
 N, PRESERVED = 0, 0
 try:
     # makes a file .tsv.gz file for each day with all features as columns
-    FILE_HANDLES = {day: gzip.open(f'data/apc/{day}.tsv.gz', \
+    FILE_HANDLES = {day: gzip.open(f'{c.APC_DIR}/{day}.tsv.gz', \
                                    'wt', newline='') for day in DAYS_TO_KEEP}
     FILE_WRITERS = {day: csv.writer(fh, delimiter='\t', quotechar='"', \
                                     quoting=csv.QUOTE_MINIMAL) for day, fh in FILE_HANDLES.items()}
@@ -68,7 +69,7 @@ try:
                 print(f'   {PERCENT_PRESEVERED}M lines of {N/1e6}M lines')
 
             # checks if day is in keep list (ex: ignore days were weather was bad)
-            if not row['opd_date'] in DAYS_TO_KEEP:
+            if not row[c.APC_DATE] in DAYS_TO_KEEP:
                 continue
 
             # generates the new features
@@ -76,11 +77,11 @@ try:
                 row[colname] = generator_function(row)
 
             # determines if row should be kept based on route number and if apc vehicle
-            if not func.keep_row(row, 'rte', 'apc_veh', '', 'apc'):
+            if not func.keep_row(row, c.APC_RTE, c.APC_VEH, None, 'APC'):
                 continue
 
-            # writes all rows from 1 day to same file.
-            this_tsv = FILE_WRITERS[row['opd_date']]
+            # writes all rows from 1 day to same file
+            this_tsv = FILE_WRITERS[row[c.APC_DATE]]
             this_tsv.writerow([func.null_if_empty(row[f]) for f in COLS_IN_OUTFILE])
             PRESERVED += 1
 

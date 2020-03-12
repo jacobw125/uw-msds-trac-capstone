@@ -1,164 +1,92 @@
 # pylint: disable=C0103
 """
-Filters and splits the APC file into multiple .tsv.gz files, one file per day in the
-study period that we wish to preserve. Also nulls out some values that are suspected to be
-outliers.
+Filters and splits the ORCA file into multiple .tsv.gz files, one file per day in the
+study period that we wish to preserve.
+
+Fall: Kept 9788082 of 27878358 lines (35.109966%)
+Summer: Kept 11018674 of 11025382 lines (99.939159%)
 """
 
 import gzip
 import csv
 from sys import argv
-from math import inf
-from collections import defaultdict
 from os import makedirs
-from typing import Dict
 from datetime import datetime
 
-IS_SUMMER=False
+import constants as c
+import functions as func
 
-if len(argv) < 2:
-    raise ValueError("Missing input file")
+# checks for input argument
+if len(argv) < 3:
+    raise ValueError('Missing input parameter. Needs ORCA file \
+                     and whether Summer data (True/False).')
 
-COLS_TO_KEEP = [
-    'txn_id',
-    'trip_group_id',
-    'prev_leg_txn_id',
-    'card_serial_number',
-    'institution_id',
-    'institution_name',
-    'business_date',
-    'txn_dtm_pacific',
-    'txn_type_id',
-    'txn_subtype_id',
-    'txn_type_descr',
-    'upgrade_indicator',
-    'product_id',
-    'product_descr',
-    'txn_passenger_type_id',
-    'txn_passenger_type_descr',
-    'passenger_count',
-    'ceffv',
-    'service_agency_id',
-    'service_agency_name',
-    'source_agency_id',
-    'source_agency_name',
-    'transit_operator_abbrev',
-    'mode_id',
-    'mode_abbrev',
-    'mode_descr',
-    'route_number',
-    'direction_id',
-    'direction_descr',
-    'agency_trip_id',
-    'device_id',
-    'device_type',
-    'device_place_name',
-    'device_place_id',
-    'device_location_id',
-    'device_location_code',
-    'device_location_abbrev',
-    'device_location_descr',
-    'origin_location_id',
-    'origin_location_code',
-    'origin_location_abbrev',
-    'origin_location_descr',
-    'destination_location_id',
-    'destination_location_code',
-    'destination_location_abbrev',
-    'destination_location_descr',
-    'device_id_filt',
-    'stop_id',
-    'stop_time',
-    'stop_lat',
-    'stop_lon',
-    'stop_error',
-    'viaserviceareaid',
-    'viaserviceareaname',
-    'trip_id',
-    'last_mode_id',
-    'last_route_number',
-    'last_stop_id',
-    'last_stop_time',
-    'last_stop_lat',
-    'last_stop_lon'
-]
+# define seasonal constants
+IS_SUMMER = argv[2] == 'True'
 
-
-def is_rapidride(row):
-    try:
-        return str(int(row['route_number']) > 600)
-    except:
-        return str(False) # can't parse as int
-
-TXN_ID_TO_DESC = {
-    '1': 'Adult',
-    '2': 'Youth',
-    '4': 'Disabled',
-    '3': 'Senior',
-    '5': 'Low Income'
-}
-
-COLS_TO_GENERATE = {
-    # 'day_of_week': lambda row: str(datetime.strptime(row['business_date'], "%Y-%m-%d").weekday()),  # Monday is 0, Sunday is 6
-    # 'is_rapidride': is_rapidride,
-    'txn_dtm_pacific': lambda row: row['txn_dtm_pacific'][:-7] if row['txn_dtm_pacific'].endswith('.000000') else row['txn_dtm_pacific'],
-    'biz_txn_diff': lambda row: str((
-            datetime.strptime(row['business_date'], "%Y-%m-%d").date() - datetime.strptime(row['txn_dtm_pacific'], "%Y-%m-%d %H:%M:%S").date()
-        ).days),
-    'txn_passenger_type_descr': lambda row: TXN_ID_TO_DESC[row['txn_passenger_type_id']]
-}
-
-def null_if_empty(s): return None if s == '' else s
-
-def keep_row(row):
-    # bus, bus rapid transit, KCM only, remove snow days
-    try:
-        rte_num = int(row['route_number'])
-    except:
-        rte_num = -1  # can't parse as int, i.e. has characters in it, so ignore this filtering condition
-    return str(row['mode_id']) in ('128', '250') and str(row['service_agency_id']) == '4' and rte_num > -1 and (rte_num < 600 or (rte_num >= 671 and rte_num <= 676))
-
-
-days_to_keep = [f'2019-01-{day:02d}' for day in range(7,32)] +  \
-               [f'2019-02-{day:02d}' for day in range(1,3)] +  \
-               [f'2019-02-{day:02d}' for day in range(13, 29)] + \
-               [f'2019-03-{day:02d}' for day in range(1, 4)]
+DAYS_TO_KEEP = c.WINTER_DAYS
+COLS_TO_KEEP = c.ORCA_WINTER_COLUMNS
 
 if IS_SUMMER:
-    days_to_keep = [f'2019-07-{day:02d}' for day in range(1, 32)]  + \
-                   [f'2019-08-{day:02d}' for day in range(1, 32)]
+    DAYS_TO_KEEP = c.SUMMER_DAYS
+    COLS_TO_KEEP = c.ORCA_SUMMER_COLUMNS
+
+# define additional freatures
+COLS_TO_GENERATE = {
+    c.ORCA_TDP: lambda row: row[c.ORCA_TDP][:-7] \
+                       if row[c.ORCA_TDP].endswith('.000000') \
+                       else row[c.ORCA_TDP],
+    c.ORCA_BTD: lambda row: str((
+        datetime.strptime(row[c.ORCA_DATE], '%Y-%m-%d').date() - \
+        datetime.strptime(row[c.ORCA_TDP], '%Y-%m-%d %H:%M:%S').date()).days),
+    c.ORCA_TPTD: lambda row: c.TXN_ID_TO_DESC[row[c.ORCA_TPTID]]
+}
 
 COLS_IN_OUTFILE = list(set(COLS_TO_KEEP + list(COLS_TO_GENERATE.keys())))
 
-print(f"Processing file {argv[1]} into data/orca/*.tsv.gz")
-makedirs('data/orca', exist_ok=True)
-n, preserved = 0, 0
+# print status update and make directory for date files
+print(f'Processing file {argv[1]} into {c.ORCA_DIR}/*.tsv.gz')
+makedirs(c.ORCA_DIR, exist_ok=True)
+
+N, PRESERVED = 0, 0
 try:
-    file_handles = { day: gzip.open(f"data/orca/{day}.tsv.gz", 'wt', newline='') for day in days_to_keep }
-    file_writers = { day: csv.writer(fh, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL) for day, fh in file_handles.items() }
-    for writer in file_writers.values():
+    # makes a file .tsv.gz file for each day with all features as columns
+    FILE_HANDLES = {day: gzip.open(f'{c.ORCA_DIR}/{day}.tsv.gz', \
+                                   'wt', newline='') for day in DAYS_TO_KEEP}
+    FILE_WRITERS = {day: csv.writer(fh, delimiter='\t', quotechar='"', \
+                                    quoting=csv.QUOTE_MINIMAL) for day, fh in FILE_HANDLES.items()}
+    for writer in FILE_WRITERS.values():
         writer.writerow(COLS_IN_OUTFILE)
 
     with (gzip.open(argv[1], 'rt') if argv[1].endswith('.gz') else open(argv[1], 'rt')) as fh:
-        csvreader = csv.DictReader(fh)
-        for row in csvreader:
-            n += 1
-            if n % 1e6 == 0:
-                print(f"    {n/1e6}M lines")
+        CSV_READER = csv.DictReader(fh)
+        for row in CSV_READER:
 
-            if not row['business_date'] in days_to_keep: continue
+            N += 1
+            # iterates through rows in ORCA data
+            if N % 1e6 == 0:
+                PERCENT_PRESEVERED = '{:.1f}'.format(PRESERVED/1e6)
+                print(f'   {PERCENT_PRESEVERED}M lines of {N/1e6}M lines')
 
+            # checks if day is in keep list (ex: ignore days were weather was bad)
+            if not row[c.ORCA_DATE] in DAYS_TO_KEEP:
+                continue
+
+            # generates the new features
             for colname, generator_function in COLS_TO_GENERATE.items():
                 row[colname] = generator_function(row)
 
-            if not keep_row(row): continue
+            # determines if row should be kept based on route number, mode, and agency
+            if not func.keep_row(row, c.ORCA_RTE, c.ORCA_MODE, c.ORCA_SERVICE_AGENCY_ID, 'ORCA'):
+                continue
 
-            this_tsv = file_writers[row['business_date']]
-            this_tsv.writerow([null_if_empty(row[f]) for f in COLS_IN_OUTFILE])
-            preserved += 1
+            # writes all rows from 1 day to same file
+            this_tsv = FILE_WRITERS[row[c.ORCA_DATE]]
+            this_tsv.writerow([func.null_if_empty(row[f]) for f in COLS_IN_OUTFILE])
+            PRESERVED += 1
 
 finally:
-    for fh in file_handles.values():
+    for fh in FILE_HANDLES.values():
         fh.close()
 
-print(f"Kept {preserved} of {n} lines ({preserved/n:%})")
+print(f'Kept {PRESERVED} of {N} lines ({PRESERVED/N:%})')
