@@ -31,38 +31,35 @@ uw-msds-trac-capstone/
   |- data/
      |- predictions/
 	**Predictions from final neural network for
-	  time aggregates(15min, 30min, hr) on the 
+	  time aggregates[15min, 30min, hr] on the 
 	  combined (summer + winter) dataset.**
 	|- model_final_nn/
 	   |- final_nn_[15min]_test.txt
 	   |- final_nn_[15min]_xval.txt
-	**Predictions from models(nn, clustered_svm, xgb),
-	  time aggregates (15min, 30min), and season
-	  (combined, summer, winter).**
+	**Predictions from models[nn, clustered_svm, xgb]
+	  on differenct time aggregates[15min, 30min] and
+          seasons[combined, summer, winter].**
 	|- model_[nn]/
-	   |- [nn]_[15min]_[season]_test.txt
-	   |- [nn]_[15min]_[season]_xval.txt
+	   |- [nn]_[15min]_[combined]_test.txt
+	   |- [nn]_[15min]_[combined]_xval.txt
      |- training_data/
-	|- combined_data/
-	   |- aggregates/
-	      **Training datasets for various time aggregation
-	        levels(15min, 30min, ampm, day, hr).**
-	      |- [15min]/
-	         |- test.tsv.gz
-                 |- train.tsv.gz
-                 |- val.tsv.gz	
-	|- summer_data
-	   |- aggregates/...
-	   |- boeing_field_2019.csv
-	|- winter_data
-	   |- aggregates/...
-	   |- boeing_field_2019.csv
+	**Training splits for survey seasons
+          [combined, summer, winter].**
+	|- [combined]_data/
+	   **Training datasets for different time aggregations
+	     [15min, 30min, ampm, day, hr].**
+	    |- [15min]/
+	       |- test.tsv.gz
+               |- train.tsv.gz
+               |- val.tsv.gz	
+     |- boeing_field_2019.csv
+     |- boeing_field_2019.csv
      |- rte_clean.csv
   |- docs/
-     |- Abstract [remaining]
-     |- Paper [remaining]
+     |- Abstract [NEED]
+     |- Paper [NEED]
      |- Performance.PNG
-     |- Poster [remaining]
+     |- Poster [NEED]
   |- eda/
      |- reports_apc/
 	|- correlates/
@@ -109,22 +106,18 @@ uw-msds-trac-capstone/
 	|- describe_nn.ipynb
      |- model_preformance/
 	|- model_final_nn/
-	   |- final_nn_15min/
+           **Final neutral network performance for 
+             difference time aggregations[15min, 30min, hr]
+             and with/without rapid ride.
+	   |- final_nn_[15min]/
 	      **Plots created by python notebook.**
-	   |- final_nn_15min_no_rr/...
-	   |- final_nn_30min/...
-           |- final_nn_30min_no_rr/...
-	   |- final_nn_hr/...
-	   |- final_nn_hr_no_rr/...
-	Various models [nn, svm, xgb]
+	   |- final_nn_[15min]_no_rr/...
+	**Various Models [nn, svm, xgb] for different
+          time aggregation [15min, 30min] and survey
+          periods [combined, summer, winter, combined]** 
 	|- model_[nn]/
-	   |- [nn]_15min_combined/
+	   |- [nn]_[15min]_[combined]/
 	      **Plots created by python notebook.**
-	   |- [nn]_15min_summer/...
-	   |- [nn]_15min_winter/...
-           |- [nn]_30min_combined/...
-	   |- [nn]_30min_summer/...
-	   |- [nn]_30min_winter/...
 	|- plots/
 	   **Plots created by python notebook.**
 	|- 01_reports_performance.py
@@ -152,7 +145,7 @@ uw-msds-trac-capstone/
 	|- clustered_linear.ipynb
         |- clustered_nn.ipynb
 	|- linear.ipynb
-	|- XGB [remaining]
+	|- XGB [NEED]
      |- final_nn.ipynb
   |- pipeline/
      |- validate_pipeline/
