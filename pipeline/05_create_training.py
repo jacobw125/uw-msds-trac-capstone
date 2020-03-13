@@ -187,13 +187,13 @@ def train_test_split(dataset, prefix):
     print(f'Xval: {len(data_xval)/len(dataset):%}')
     print(f'Test: {len(data_test)/len(dataset):%}')
     #
-    makedirs(f'{c.MERGE_DIR}{TAG3}/{c.AGG_DIR}/{prefix}', exist_ok=True)
+    makedirs(f'{c.MERGE_DIR}{TAG3}/{prefix}', exist_ok=True)
     print('Saving data')
-    data_train.to_csv(f'{c.MERGE_DIR}{TAG3}/{c.AGG_DIR}{prefix}/train.tsv.gz',
+    data_train.to_csv(f'{c.MERGE_DIR}{TAG3}/{prefix}/train.tsv.gz',
                       sep='\t', index=False, compression='gzip')
-    data_xval.to_csv(f'{c.MERGE_DIR}{TAG3}/{c.AGG_DIR}/{prefix}/xval.tsv.gz',
+    data_xval.to_csv(f'{c.MERGE_DIR}{TAG3}/{prefix}/xval.tsv.gz',
                      sep='\t', index=False, compression='gzip')
-    data_test.to_csv(f'{c.MERGE_DIR}{TAG3}/{c.AGG_DIR}/{prefix}/test.tsv.gz',
+    data_test.to_csv(f'{c.MERGE_DIR}{TAG3}/{prefix}/test.tsv.gz',
                      sep='\t', index=False, compression='gzip')
     #
     return data_train, data_xval, data_test

@@ -2,7 +2,6 @@
 Contains contants used throughout pipeline
 '''
 
-AGG_DIR = 'aggregates/'
 AGG_COLUMNS = {'day_of_week': 'first', 'is_ns': 'first', 'is_rapid': 'first',
                'is_weekend': 'first', 'orca_total': 'sum', 'frac_disabled': 'mean',
                'frac_youth': 'mean', 'frac_senior': 'mean', 'frac_li': 'mean',
@@ -31,7 +30,7 @@ HD = 'hour_of_day'
 HDT = 'hour_of_day_text'
 HQ = 'hr_quadrant'
 
-MERGE_DIR = 'data/' #training_data/'
+MERGE_DIR = 'data/training_data/'
 
 NS = 'is_ns'
 
