@@ -14,7 +14,7 @@ To do this we:
 For more information on the methodology and results, see [here](https://github.com/jacobw125/uw-msds-trac-capstone/blob/master/docs).
 
 ## Installation
-1. Clone the repo  
+1. Clone the repository  
 2. Create a new python environmet using the command:  
 ```conda env create UWTRAC```  
 3. Activate UWTRAC by using the command:  
