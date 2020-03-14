@@ -59,7 +59,7 @@ uw-msds-trac-capstone/
      |- Abstract [NEED]
      |- Paper [NEED]
      |- Performance.PNG
-     |- Poster [NEED]
+     |- Poster
   |- eda/
      |- reports_apc/
 	|- correlates/
@@ -131,7 +131,7 @@ uw-msds-trac-capstone/
 	   **Plots created by python notebook.**
 	|- ridership_by_day_evaluation.ipynb
   |- examples/
-     |- User_Guide.pdf [remaining]
+     |- User_Guide.pdf
   |- models/
      |- final_nn/
 	**Model components per time aggregation modeled [15m, 30m, hr].**
@@ -149,9 +149,9 @@ uw-msds-trac-capstone/
      |- final_nn.ipynb
   |- pipeline/
      |- validate_pipeline/
-	|- analyze_stopfile.py [remaining]
+	|- analyze_stopfile.py
         |- sample_files.py
-        |- pipeline.ipynb [remaining]
+        |- pipeline.ipynb
      |- 01_filter_apc.py
      |- 02_filter_apc.py
      |- 03_agg_orca.py
